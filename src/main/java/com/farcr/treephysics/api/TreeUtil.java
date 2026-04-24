@@ -27,39 +27,6 @@ public class TreeUtil {
             new BlockPos(0, 1, -1)
     };
 
-    public static final BlockPos[] UPWARD_OFFSETS = new BlockPos[] {
-            new BlockPos(1, 0, 0),
-            new BlockPos(-1, 0, 0),
-            new BlockPos(0, 1, 0),
-            new BlockPos(0, 0, 1),
-            new BlockPos(0, 0, -1),
-            new BlockPos(1, 1, 0),
-            new BlockPos(-1, 1, 0),
-            new BlockPos(1, 0, 1),
-            new BlockPos(-1, 0, -1),
-            new BlockPos(1, 0, -1),
-            new BlockPos(-1, 0, 1),
-            new BlockPos(0, 1, 1),
-            new BlockPos(0, 1, -1)
-    };
-
-    public static final BlockPos[] DOWNWARD_OFFSETS = new BlockPos[] {
-            new BlockPos(1, 0, 0),
-            new BlockPos(-1, 0, 0),
-            new BlockPos(0, -1, 0),
-            new BlockPos(0, 0, 1),
-            new BlockPos(0, 0, -1),
-            new BlockPos(-1, -1, 0),
-            new BlockPos(1, -1, 0),
-            new BlockPos(1, 0, 1),
-            new BlockPos(-1, 0, -1),
-            new BlockPos(1, 0, -1),
-            new BlockPos(-1, 0, 1),
-            new BlockPos(0, -1, -1),
-            new BlockPos(0, -1, 1),
-    };
-
-
     public static boolean treeSpread(BlockState from, BlockState to, TreeContext context) {
         if(context.isLog(from)) {
             return context.isLog(to) || context.isLeaf(to);
