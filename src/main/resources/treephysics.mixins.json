@@ -4,13 +4,13 @@
   "package": "com.farcr.treephysics.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "BlockWithSubLevelCallbackMixin",
-    "LeavesBlockMixin",
-    "SubLevelAssemblyHelperMixin",
-    "TrunkPlacerMixin"
+    "collision_effects.BlockWithSubLevelCallbackMixin",
+    "collision_effects.LeavesBlockMixin",
+    "rooted_dirt_placement.TrunkPlacerMixin",
+    "tree_splitting.SubLevelAssemblyHelperMixin"
   ],
   "client": [
-    "ParticleEngineMixin"
+    "collision_effects.ParticleEngineMixin"
   ],
   "injectors": {
     "defaultRequire": 1

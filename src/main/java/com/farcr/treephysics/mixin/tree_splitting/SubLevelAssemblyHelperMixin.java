@@ -1,7 +1,6 @@
-package com.farcr.treephysics.mixin;
+package com.farcr.treephysics.mixin.tree_splitting;
 
 import com.farcr.treephysics.api.manager.TreeServerHandler;
-import com.llamalad7.mixinextras.sugar.Local;
 import dev.ryanhcode.sable.Sable;
 import dev.ryanhcode.sable.api.SubLevelAssemblyHelper;
 import dev.ryanhcode.sable.companion.math.BoundingBox3ic;

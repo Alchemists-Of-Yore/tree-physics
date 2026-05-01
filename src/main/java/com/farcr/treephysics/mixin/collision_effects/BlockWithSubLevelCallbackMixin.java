@@ -1,4 +1,4 @@
-package com.farcr.treephysics.mixin;
+package com.farcr.treephysics.mixin.collision_effects;
 
 import com.farcr.treephysics.collision_callback.LogCallback;
 import dev.ryanhcode.sable.api.block.BlockWithSubLevelCollisionCallback;

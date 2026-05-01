@@ -1,10 +1,9 @@
-package com.farcr.treephysics.mixin;
+package com.farcr.treephysics.mixin.collision_effects;
 
 import com.farcr.treephysics.client.TreeManager;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.TerrainParticle;
 import net.minecraft.core.BlockPos;
