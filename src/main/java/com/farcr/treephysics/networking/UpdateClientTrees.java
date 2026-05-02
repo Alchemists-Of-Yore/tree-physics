@@ -32,7 +32,7 @@ public record UpdateClientTrees(ResourceKey<Level> dimension, List<UUID> trees) 
     }
 
     public void handle(PacketContext context) {
-        TreePhysicsClient.TREE_HANDLER.setTrees(this.dimension, new HashSet<>(this.trees));
+        TreePhysicsClient.TREE_MANAGER.setTrees(this.dimension, new HashSet<>(this.trees));
     }
 
 }

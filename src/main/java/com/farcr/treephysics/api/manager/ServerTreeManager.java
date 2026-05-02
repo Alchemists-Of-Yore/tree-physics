@@ -29,17 +29,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class TreeServerHandler extends SavedData implements TreeManager {
+public class ServerTreeManager extends SavedData implements TreeManager {
     public static final String ID = "treephysics_trees";
 
     private final Map<UUID, TreeData> trees = new Object2ObjectOpenHashMap<>();
     private ServerLevel level;
 
-    public TreeServerHandler() {
+    public ServerTreeManager() {
         this(null);
     }
 
-    public TreeServerHandler(ServerLevel level) {
+    public ServerTreeManager(ServerLevel level) {
         this.level = level;
     }
 
@@ -50,11 +50,15 @@ public class TreeServerHandler extends SavedData implements TreeManager {
                 continue;
             }
 
-            if(tree.lifeTicks <= 200) {
+            int gravityTicks = TreePhysicsConfig.GRAVITY_MULTIPLIER_TICKS.getAsInt();
+            if(gravityTicks == -1 || tree.lifeTicks <= gravityTicks) {
                 Vector3d gravity = DimensionPhysicsData.getGravity(level);
 
                 Vector3d dir = subLevel.logicalPose().transformNormal(new Vector3d(0, 1, 0));
                 double gravityScale = 1.0 -  Math.max(0, dir.dot(0, 1, 0));
+
+                gravityScale *= Math.max(0.0, TreePhysicsConfig.GRAVITY_MULTIPLIER.getAsDouble() - 1.0);
+
 
                 RigidBodyHandle handle = system.getPhysicsHandle(subLevel);
                 handle.addLinearAndAngularVelocity(gravity.mul(timeStep * gravityScale), JOMLConversion.ZERO);
@@ -69,7 +73,7 @@ public class TreeServerHandler extends SavedData implements TreeManager {
                 continue;
             }
 
-            if (tree.lifeTicks > TreePhysicsConfig.MAX_LIFE_TICKS.getAsInt()) {
+            if(this.shouldDespawn(tree)) {
                 subLevel.markRemoved();
                 continue;
             }
@@ -82,9 +86,31 @@ public class TreeServerHandler extends SavedData implements TreeManager {
 
     public void setTree(SubLevel subLevel) {
         TreeData data = new TreeData(subLevel.getUniqueId());
+        data.updateLogCount(this.level);
         this.trees.put(subLevel.getUniqueId(), data);
         this.setDirty();
         this.sendAllTrees();
+    }
+
+    public void updateTree(@Nullable SubLevel subLevel) {
+        if(subLevel == null) return;
+        TreeData data = this.trees.get(subLevel.getUniqueId());
+        if(data != null) {
+            int logCount = data.logs;
+            data.updateLogCount(this.level);
+            if(logCount != data.logs) {
+                this.setDirty();
+            }
+        }
+    }
+
+    public void decrementLogs(@Nullable SubLevel subLevel) {
+        if(subLevel == null) return;
+        TreeData data = this.trees.get(subLevel.getUniqueId());
+        if(data != null) {
+            data.logs = Math.max(0, data.logs - 1);
+            this.setDirty();
+        }
     }
 
     public void unsetTree(SubLevel subLevel) {
@@ -97,6 +123,8 @@ public class TreeServerHandler extends SavedData implements TreeManager {
         TreeData originalTree = this.trees.get(subLevel.getUniqueId());
         if(originalTree != null) {
             TreeData data = new TreeData(split.getUniqueId()).copy(originalTree);
+            data.updateLogCount(this.level);
+            originalTree.updateLogCount(this.level);
             this.trees.put(split.getUniqueId(), data);
             this.sendAllTrees();
             this.setDirty();
@@ -117,7 +145,7 @@ public class TreeServerHandler extends SavedData implements TreeManager {
         MinecraftServer server = player.getServer();
         if(server != null) {
             for (ServerLevel serverLevel : server.getAllLevels()) {
-                TreeServerHandler handler = TreeServerHandler.get(serverLevel);
+                ServerTreeManager handler = ServerTreeManager.get(serverLevel);
                 VeilPacketManager.player((ServerPlayer) player).sendPacket(new UpdateClientTrees(serverLevel.dimension(), handler.trees.keySet().stream().toList()));
             }
         }
@@ -133,16 +161,16 @@ public class TreeServerHandler extends SavedData implements TreeManager {
         return this.level;
     }
 
-    private static TreeServerHandler create(ServerLevel level, CompoundTag tag, HolderLookup.Provider registries) {
-        TreeServerHandler handler = new TreeServerHandler(level);
+    private static ServerTreeManager create(ServerLevel level, CompoundTag tag, HolderLookup.Provider registries) {
+        ServerTreeManager handler = new ServerTreeManager(level);
         ListTag list = (ListTag) tag.get(ID);
         handler.loadTrees(list);
         return handler;
     }
 
-    public static TreeServerHandler get(ServerLevel level) {
-        TreeServerHandler handler = level.getChunkSource().getDataStorage().computeIfAbsent(
-                new SavedData.Factory<>(TreeServerHandler::new, (tag, provider) -> create(level, tag, provider), null),
+    public static ServerTreeManager get(ServerLevel level) {
+        ServerTreeManager handler = level.getChunkSource().getDataStorage().computeIfAbsent(
+                new SavedData.Factory<>(ServerTreeManager::new, (tag, provider) -> create(level, tag, provider), null),
                 ID);
         handler.level = level;
         return handler;
@@ -166,5 +194,22 @@ public class TreeServerHandler extends SavedData implements TreeManager {
         List<TreeData> values = this.trees.values().stream().toList();
         System.out.println("trees saved! " + values);
         return (ListTag) TreeData.CODEC.listOf().encodeStart(NbtOps.INSTANCE, values).getOrThrow();
+    }
+
+    private boolean shouldDespawn(TreeData data) {
+        TreePhysicsConfig.DespawnBehavior behavior = TreePhysicsConfig.DESPAWN_BEHAVIOR.get();
+        if(behavior == TreePhysicsConfig.DespawnBehavior.NO_DESPAWN) {
+            return false;
+        }
+
+        if(data.lifeTicks >= TreePhysicsConfig.DESPAWN_TIME.getAsInt()) {
+            if(behavior == TreePhysicsConfig.DespawnBehavior.DESPAWN_ALL) {
+                return true;
+            }
+
+            return data.logs <= 5;
+        }
+
+        return false;
     }
 }

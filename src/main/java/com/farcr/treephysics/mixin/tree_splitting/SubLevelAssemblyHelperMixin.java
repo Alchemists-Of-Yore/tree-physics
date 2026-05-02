@@ -1,6 +1,6 @@
 package com.farcr.treephysics.mixin.tree_splitting;
 
-import com.farcr.treephysics.api.manager.TreeServerHandler;
+import com.farcr.treephysics.api.manager.ServerTreeManager;
 import dev.ryanhcode.sable.Sable;
 import dev.ryanhcode.sable.api.SubLevelAssemblyHelper;
 import dev.ryanhcode.sable.companion.math.BoundingBox3ic;
@@ -19,7 +19,7 @@ public class SubLevelAssemblyHelperMixin {
     @Inject(method = "assembleBlocks", at = @At("RETURN"))
     private static void treephysics$assembleBlocks(ServerLevel level, BlockPos anchor, Iterable<BlockPos> blocks, BoundingBox3ic bounds, CallbackInfoReturnable<ServerSubLevel> cir) {
         SubLevel subLevel = Sable.HELPER.getContaining(level, anchor);
-        TreeServerHandler handler = TreeServerHandler.get(level);
+        ServerTreeManager handler = ServerTreeManager.get(level);
         if(handler.isTree(subLevel)) {
             ServerSubLevel returnValue = cir.getReturnValue();
             handler.setSplitFrom(subLevel, returnValue);

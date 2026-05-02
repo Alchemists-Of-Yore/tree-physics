@@ -12,7 +12,7 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 @Mod(value = TreePhysics.MOD_ID, dist = Dist.CLIENT)
 public class TreePhysicsClient {
 
-    public static final TreeClientHandler TREE_HANDLER = new TreeClientHandler();
+    public static final ClientTreeManager TREE_MANAGER = new ClientTreeManager();
 
     public TreePhysicsClient(IEventBus eventBus, ModContainer container) {
         eventBus.addListener(this::registerParticleProviders);

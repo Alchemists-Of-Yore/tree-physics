@@ -1,10 +1,11 @@
 package com.farcr.treephysics.event;
 
 import com.farcr.treephysics.TreePhysics;
-import com.farcr.treephysics.api.manager.TreeServerHandler;
+import com.farcr.treephysics.api.manager.ServerTreeManager;
 import com.farcr.treephysics.api.manager.TreeSubLevelObserver;
 import com.farcr.treephysics.api.tree_gathering.TreeGatherer;
 import com.farcr.treephysics.client.TreeManager;
+import com.farcr.treephysics.index.TreePhysicsConfig;
 import dev.ryanhcode.sable.Sable;
 import dev.ryanhcode.sable.api.physics.PhysicsPipeline;
 import dev.ryanhcode.sable.api.physics.handle.RigidBodyHandle;
@@ -22,14 +23,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ParticleUtils;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,7 +49,7 @@ public class CommonEvents {
     @SubscribeEvent
     public static void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
-        TreeServerHandler.sendUpdatePacket(player);
+        ServerTreeManager.sendUpdatePacket(player);
     }
 
     @SubscribeEvent
@@ -57,32 +57,53 @@ public class CommonEvents {
         Player player = event.getPlayer();
         Level level = player.level();
         BlockPos pos = event.getPos();
+        BlockState brokenState = level.getBlockState(pos);
+        ServerTreeManager manager = (ServerTreeManager) TreeManager.get(level);
 
-        if(!player.isShiftKeyDown() && level.getBlockState(pos).is(BlockTags.LOGS)) {
-            List<ServerSubLevel> subLevels = TreeGatherer.trySplit((ServerLevel) event.getLevel(), pos);
-            BlockState brokenState = level.getBlockState(pos);
-
-            BlockPos belowPos = pos.below();
-            BlockState belowState = level.getBlockState(belowPos);
-            if(belowState.is(Blocks.ROOTED_DIRT)) {
-                level.setBlock(belowPos, Blocks.DIRT.defaultBlockState(), 2);
+        if(brokenState.is(BlockTags.LOGS)) {
+            if(manager.isTree(pos)) {
+                SubLevel tree = manager.getTree(pos);
+                manager.decrementLogs(tree);
+                return;
             }
 
-            if(subLevels == null || subLevels.isEmpty()) return;
-            if(!(brokenState.getBlock() instanceof RotatedPillarBlock) || brokenState.getValue(RotatedPillarBlock.AXIS) != Direction.Axis.Y) return;
+            if(!player.isShiftKeyDown()) {
+                List<ServerSubLevel> subLevels = TreeGatherer.trySplit((ServerLevel) event.getLevel(), pos);
 
-            for (ServerSubLevel subLevel : subLevels) {
-                SubLevelPhysicsSystem system = SubLevelPhysicsSystem.get(level);
-                RigidBodyHandle handle = system.getPhysicsHandle(subLevel);
+                BlockPos belowPos = pos.below();
+                BlockState belowState = level.getBlockState(belowPos);
+                if(belowState.is(Blocks.ROOTED_DIRT)) {
+                    level.setBlock(belowPos, Blocks.DIRT.defaultBlockState(), 2);
+                }
 
-                Vec3 breakDirection = player.getEyePosition().subtract(pos.getCenter()).normalize();
-                Vector3d forward = new Vector3d(JOMLConversion.toJOML(Direction.getNearest(breakDirection).getNormal()));
-                forward.rotateAxis(Math.toRadians(level.getRandom().nextIntBetweenInclusive(-25, 25)), 0, 1, 0);
-                Vector3d torque = forward.cross(0, 1, 0, new Vector3d()).mul(0.3);
-                Vector3d velocity = forward.negate(new Vector3d());
+                if(subLevels == null || subLevels.isEmpty()) return;
+                if(!(brokenState.getBlock() instanceof RotatedPillarBlock) || brokenState.getValue(RotatedPillarBlock.AXIS) != Direction.Axis.Y) return;
 
-                handle.addLinearAndAngularVelocity(velocity, torque);
+                for (ServerSubLevel subLevel : subLevels) {
+                    SubLevelPhysicsSystem system = SubLevelPhysicsSystem.get(level);
+                    RigidBodyHandle handle = system.getPhysicsHandle(subLevel);
+
+                    Vec3 breakDirection = player.getEyePosition().subtract(pos.getCenter()).normalize();
+                    Vector3d forward = new Vector3d(JOMLConversion.toJOML(Direction.getNearest(breakDirection).getNormal()));
+                    forward.rotateAxis(Math.toRadians(level.getRandom().nextIntBetweenInclusive(-25, 25)), 0, 1, 0);
+
+                    Vector3d torque = forward.cross(0, 1, 0, new Vector3d()).mul(TreePhysicsConfig.IMPULSE_TORQUE.getAsDouble());
+                    Vector3d velocity = forward.negate(new Vector3d()).mul(TreePhysicsConfig.IMPULSE_FORCE.getAsDouble());
+
+                    handle.addLinearAndAngularVelocity(velocity, torque);
+                }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void blockPlace(BlockEvent.EntityPlaceEvent event) {
+        LevelAccessor level = event.getLevel();
+        BlockPos pos = event.getPos();
+        ServerTreeManager manager = (ServerTreeManager) TreeManager.get((Level) level);
+        SubLevel subLevel = manager.getTree(pos);
+        if(subLevel != null) {
+            manager.updateTree(subLevel);
         }
     }
 
@@ -93,10 +114,11 @@ public class CommonEvents {
         TreeManager treeManager = TreeManager.get(event.getLevel());
         Level level = event.getLevel();
 
-        if(subLevel != null && treeManager.isTree(subLevel)) {
-            if(event.getUsePhase() == UseItemOnBlockEvent.UsePhase.ITEM_AFTER_BLOCK && event.getItemStack().is(Items.HONEYCOMB)) {
+        if(treeManager.isTree(subLevel)) {
+            boolean isWaxing = event.getUsePhase() == UseItemOnBlockEvent.UsePhase.ITEM_AFTER_BLOCK && event.getItemStack().is(Items.HONEYCOMB);
+            if(isWaxing) {
                 if(!event.getLevel().isClientSide()) {
-                    TreeServerHandler handler = (TreeServerHandler) treeManager;
+                    ServerTreeManager handler = (ServerTreeManager) treeManager;
                     handler.unsetTree(subLevel);
                 } else {
                     BoundingBox3ic box = subLevel.getPlot().getBoundingBox();
@@ -118,7 +140,9 @@ public class CommonEvents {
                 level.playSound(null, event.getPos(), SoundEvents.HONEYCOMB_WAX_ON, SoundSource.BLOCKS, 1.0f, 1.0f);
                 event.getItemStack().shrink(1);
             } else {
-                event.setCanceled(true);
+                if(!TreePhysicsConfig.CAN_BUILD.getAsBoolean()) {
+                    event.setCanceled(true);
+                }
             }
         }
     }
@@ -133,7 +157,7 @@ public class CommonEvents {
 
     public static void postPhysicsTick(SubLevelPhysicsSystem system, double timeStep) {
         ServerLevel level = system.getLevel();
-        TreeServerHandler handler = TreeServerHandler.get(level);
+        ServerTreeManager handler = ServerTreeManager.get(level);
         PhysicsPipeline pipeline = system.getPipeline();
         handler.physicsTick(level, system, pipeline, timeStep);
     }

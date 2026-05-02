@@ -1,7 +1,7 @@
 package com.farcr.treephysics.api.tree_gathering;
 
 import com.farcr.treephysics.api.TreeUtil;
-import com.farcr.treephysics.api.manager.TreeServerHandler;
+import com.farcr.treephysics.api.manager.ServerTreeManager;
 import dev.ryanhcode.sable.api.SubLevelAssemblyHelper;
 import dev.ryanhcode.sable.companion.math.BoundingBox3i;
 import dev.ryanhcode.sable.sublevel.ServerSubLevel;
@@ -26,7 +26,7 @@ public class TreeGatherer {
         }
 
         List<ServerSubLevel> subLevels = new ArrayList<>();
-        TreeServerHandler handler = TreeServerHandler.get(level);
+        ServerTreeManager handler = ServerTreeManager.get(level);
 
         for (BlockPos offset : TreeUtil.DIRECTION_OFFSETS_CORNERS) {
             BlockPos start = brokenPos.offset(offset);

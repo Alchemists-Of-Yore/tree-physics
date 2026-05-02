@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class TreeClientHandler implements TreeManager {
+public class ClientTreeManager implements TreeManager {
     private final Map<ResourceKey<Level>, Set<UUID>> trees = new Object2ObjectOpenHashMap<>();
 
     @Override

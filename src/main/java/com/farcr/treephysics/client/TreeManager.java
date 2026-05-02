@@ -1,14 +1,16 @@
 package com.farcr.treephysics.client;
 
-import com.farcr.treephysics.api.manager.TreeServerHandler;
+import com.farcr.treephysics.api.manager.ServerTreeManager;
 import dev.ryanhcode.sable.Sable;
 import dev.ryanhcode.sable.sublevel.SubLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 public interface TreeManager {
+    @Contract("null -> false")
     boolean isTree(@Nullable SubLevel subLevel);
 
     Level getLevel();
@@ -28,9 +30,9 @@ public interface TreeManager {
 
     static TreeManager get(Level level) {
         if(level.isClientSide()) {
-            return TreePhysicsClient.TREE_HANDLER;
+            return TreePhysicsClient.TREE_MANAGER;
         } else {
-            return TreeServerHandler.get((ServerLevel) level);
+            return ServerTreeManager.get((ServerLevel) level);
         }
     }
 }

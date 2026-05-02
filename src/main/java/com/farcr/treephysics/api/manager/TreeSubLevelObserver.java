@@ -26,7 +26,7 @@ public class TreeSubLevelObserver implements SubLevelObserver {
         }
     }
 
-    public TreeServerHandler getTreeHandler() {
-        return TreeServerHandler.get(this.level);
+    public ServerTreeManager getTreeHandler() {
+        return ServerTreeManager.get(this.level);
     }
 }
