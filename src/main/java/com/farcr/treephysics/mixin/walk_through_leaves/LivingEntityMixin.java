@@ -62,6 +62,7 @@ public abstract class LivingEntityMixin extends Entity {
             if(this.getInBlockState().is(BlockTags.LEAVES)) {
                 double value = TreePhysicsConfig.LEAF_WALKING_SPEED.getAsDouble();
                 movement = movement.multiply(value, 1, value);
+                this.setSprinting(false);
             }
         }
         super.move(type, movement);
