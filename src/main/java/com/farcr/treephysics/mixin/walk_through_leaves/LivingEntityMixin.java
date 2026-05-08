@@ -23,7 +23,8 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Unique
     private boolean treephysics$reduceFallSpeed = false;
-
+    @Unique
+    private boolean treephysics$inLeaves = false;
     @Unique
     private BlockPos treephysics$lastBlockPos = BlockPos.ZERO;
 
@@ -57,9 +58,17 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @Override
+    protected void onInsideBlock(BlockState state) {
+        super.onInsideBlock(state);
+        this.treephysics$inLeaves = state.is(BlockTags.LEAVES);
+    }
+
+    @Override
     public void move(MoverType type, Vec3 movement) {
         if(!this.noPhysics) {
-            if(this.getInBlockState().is(BlockTags.LEAVES)) {
+            BlockState state = this.getInBlockState();
+            this.treephysics$inLeaves |= state.is(BlockTags.LEAVES);
+            if(this.treephysics$inLeaves) {
                 double value = TreePhysicsConfig.LEAF_WALKING_SPEED.getAsDouble();
                 movement = movement.multiply(value, 1, value);
                 this.setSprinting(false);
