@@ -1,4 +1,7 @@
 {
   "death.attack.tree": "%s was crushed by a tree",
-  "commands.treephysics.untree.success": "Unset %s tree%s"
+  "commands.treephysics.untree.success": "Unset %s tree%s",
+  "treephysics.subtitles.sub_level.tree.creak": "Tree creaks",
+  "treephysics.subtitles.sub_level.tree.impact": "Tree crashes",
+  "treephysics.subtitles.sub_level.tree.leaf_rustle": "Leaves rustle"
 }

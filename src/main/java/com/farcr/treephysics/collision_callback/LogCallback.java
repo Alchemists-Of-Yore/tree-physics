@@ -1,10 +1,8 @@
 package com.farcr.treephysics.collision_callback;
 
-import com.farcr.treephysics.api.TreeUtil;
 import com.farcr.treephysics.api.manager.ServerTreeManager;
+import com.farcr.treephysics.api.manager.TreeData;
 import com.farcr.treephysics.client.TreeManager;
-import com.farcr.treephysics.index.TreePhysicsTags;
-import com.farcr.treephysics.particle.collision_dust.CollisionDustParticleOptions;
 import dev.ryanhcode.sable.physics.callback.FragileBlockCallback;
 import dev.ryanhcode.sable.sublevel.SubLevel;
 import net.minecraft.core.BlockPos;
@@ -42,12 +40,13 @@ public class LogCallback extends FragileBlockCallback {
 
     @Override
     public CollisionResult onHit(ServerLevel level, BlockPos pos, BlockState state, Vector3d hitPos) {
-        TreeManager treeManager = TreeManager.get(level);
+        ServerTreeManager treeManager = (ServerTreeManager) TreeManager.get(level);
         SubLevel subLevel = treeManager.getTree(pos);
         if(subLevel != null) {
-            subLevel.logicalPose().transformPosition(hitPos);
+            TreeData data = treeManager.getTreeData(subLevel);
 
-            BlockState dustState = null;
+            subLevel.logicalPose().transformPosition(hitPos);
+            BlockState hitState = null;
             float dist = 0.3f;
 
             for (Vector3dc offset : OFFSETS) {
@@ -56,19 +55,12 @@ public class LogCallback extends FragileBlockCallback {
                 BlockPos.MutableBlockPos blockPos = offsetBlockPos.set(offsetPos.x, offsetPos.y, offsetPos.z);
                 BlockState blockState = level.getBlockState(blockPos);
                 if(!blockState.isAir() && blockState.isSolid()) {
-                    dustState = blockState;
+                    hitState = blockState;
                     break;
                 }
             }
 
-            if(dustState != null && dustState.is(TreePhysicsTags.PRODUCES_DUST_ON_IMPACT)) {
-                level.sendParticles(new CollisionDustParticleOptions(dustState), hitPos.x, hitPos.y, hitPos.z, 6, 0, 0, 0, 1);
-            }
-
-            double uprightness = TreeUtil.getUprightness(subLevel);
-            if(uprightness < 0.75) {
-                ((ServerTreeManager) treeManager).startBreakingLeaves(subLevel);
-            }
+            data.onCollision(level, treeManager, subLevel, hitPos, hitState, pos, state);
         }
 
         return CollisionResult.NONE;

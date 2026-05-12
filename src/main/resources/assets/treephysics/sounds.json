@@ -1,0 +1,23 @@
+{
+  "sub_level.tree.creak": {
+    "sounds": [
+      "treephysics:tree/creak_1",
+      "treephysics:tree/creak_2"
+    ],
+    "subtitle": "treephysics.subtitles.sub_level.tree.creak"
+  },
+  "sub_level.tree.impact": {
+    "sounds": [
+      "treephysics:tree/impact_1",
+      "treephysics:tree/impact_2"
+    ],
+    "subtitle": "treephysics.subtitles.sub_level.tree.impact"
+  },
+  "sub_level.tree.leaf_rustle": {
+    "sounds": [
+      "treephysics:tree/leaf_rustle_1",
+      "treephysics:tree/leaf_rustle_2"
+    ],
+    "subtitle": "treephysics.subtitles.sub_level.tree.leaf_rustle"
+  }
+}

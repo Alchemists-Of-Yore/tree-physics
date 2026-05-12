@@ -1,4 +1,4 @@
-package com.farcr.treephysics.mixin.collision_effects;
+package com.farcr.treephysics.mixin.leaf_effect_fixes;
 
 import com.farcr.treephysics.client.TreeManager;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;

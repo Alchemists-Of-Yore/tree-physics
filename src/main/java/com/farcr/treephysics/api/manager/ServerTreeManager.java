@@ -105,10 +105,14 @@ public class ServerTreeManager extends SavedData implements TreeManager {
 
     public void setTree(SubLevel subLevel) {
         TreeData data = new TreeData(subLevel.getUniqueId());
-        data.updateLogCount(this.level);
+        data.updateTreeData(this.level);
         this.trees.put(subLevel.getUniqueId(), data);
         this.setDirty();
         this.sendAllTrees();
+    }
+
+    public TreeData getTreeData(SubLevel subLevel) {
+        return this.trees.get(subLevel.getUniqueId());
     }
 
     public void updateTree(@Nullable SubLevel subLevel) {
@@ -116,7 +120,7 @@ public class ServerTreeManager extends SavedData implements TreeManager {
         TreeData data = this.trees.get(subLevel.getUniqueId());
         if(data != null) {
             int logCount = data.logs;
-            data.updateLogCount(this.level);
+            data.updateTreeData(this.level);
             if(logCount != data.logs) {
                 this.setDirty();
             }
@@ -142,8 +146,8 @@ public class ServerTreeManager extends SavedData implements TreeManager {
         TreeData originalTree = this.trees.get(subLevel.getUniqueId());
         if(originalTree != null) {
             TreeData data = new TreeData(split.getUniqueId()).copy(originalTree);
-            data.updateLogCount(this.level);
-            originalTree.updateLogCount(this.level);
+            data.updateTreeData(this.level);
+            originalTree.updateTreeData(this.level);
             this.trees.put(split.getUniqueId(), data);
             this.sendAllTrees();
             this.setDirty();

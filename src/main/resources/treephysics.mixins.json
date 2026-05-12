@@ -16,7 +16,8 @@
     "walk_through_leaves.SubLevelEntityCollisionMixin"
   ],
   "client": [
-    "collision_effects.ParticleEngineMixin"
+    "leaf_effect_fixes.LevelRendererMixin",
+    "leaf_effect_fixes.ParticleEngineMixin"
   ],
   "injectors": {
     "defaultRequire": 1
