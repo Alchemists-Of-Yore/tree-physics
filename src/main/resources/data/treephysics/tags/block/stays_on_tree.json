@@ -5,6 +5,8 @@
     { "id": "nomansland:tap", "required": false },
     { "id": "nomansland:beard_moss", "required": false },
     { "id": "nomansland:shelf_mushroom_block", "required": false },
-    { "id": "nomansland:shelf_mushroom", "required": false }
+    { "id": "nomansland:shelf_mushroom", "required": false },
+    { "id": "nomansland:apple_fruit_leaves", "required": false },
+    { "id": "nomansland:pear_fruit_leaves", "required": false }
   ]
 }
