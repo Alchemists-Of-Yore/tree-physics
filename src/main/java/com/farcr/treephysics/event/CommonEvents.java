@@ -37,6 +37,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.UseItemOnBlockEvent;
 import net.neoforged.neoforge.event.level.AlterGroundEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import org.joml.Vector3d;
@@ -100,15 +101,14 @@ public class CommonEvents {
     }
 
     @SubscribeEvent
-    public static void blockPlace(BlockEvent.EntityPlaceEvent event) {
-        if(event.getLevel() instanceof ServerLevel level) {
-            BlockPos pos = event.getPos();
-            SubLevel subLevel = Sable.HELPER.getContaining(level, pos);
-            ServerTreeManager treeManager = (ServerTreeManager) TreeManager.get(level);
+    public static void useItemOnBlock(UseItemOnBlockEvent event) {
+        if(!TreePhysicsConfig.PREVENT_INTERACTING_WITH_TREES.get()) return;
+        BlockPos pos = event.getPos();
+        SubLevel subLevel = Sable.HELPER.getContaining(event.getLevel(), pos);
+        TreeManager treeManager = TreeManager.get(event.getLevel());
 
-            if(treeManager.isTree(subLevel)) {
-                treeManager.unsetTree(subLevel);
-            }
+        if(treeManager.isTree(subLevel)) {
+            event.setCanceled(true);
         }
     }
 
