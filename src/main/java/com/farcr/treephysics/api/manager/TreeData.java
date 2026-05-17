@@ -43,6 +43,7 @@ public class TreeData {
     public boolean hasLeaves;
     public boolean playedImpact;
     public boolean playedCreak;
+    public transient int stoppedTicks;
 
     public TreeData(UUID subLevelId, int lifeTicks, int leafBreakProgress, int logs, boolean isBranch, boolean hasLeaves, boolean playedImpact, boolean playedCreak) {
         this.subLevelId = subLevelId;

@@ -7,6 +7,7 @@ public class TreePhysicsConfig {
 
     public static final ModConfigSpec.IntValue DESPAWN_TIME;
     public static final ModConfigSpec.EnumValue<DespawnBehavior> DESPAWN_BEHAVIOR;
+    public static final ModConfigSpec.BooleanValue DROP_ITEMS_ON_DESPAWN;
     public static final ModConfigSpec.BooleanValue REQUIRES_AXE;
     public static final ModConfigSpec.BooleanValue PREVENT_BUILDING_ON_TREES;
     public static final ModConfigSpec.BooleanValue CAN_WALK_THROUGH_LEAVES;
@@ -26,12 +27,17 @@ public class TreePhysicsConfig {
         DESPAWN_TIME = builder
                 .comment("treephysics.config.despawn_time.tooltip")
                 .translation("treephysics.config.despawn_time")
-                .defineInRange("despawn_time", 144000, 0, Integer.MAX_VALUE);
+                .defineInRange("despawn_time", 144000, -1, Integer.MAX_VALUE);
 
         DESPAWN_BEHAVIOR = builder
                 .comment("treephysics.config.despawn_behavior.tooltip")
                 .translation("treephysics.config.despawn_behavior")
                 .defineEnum("despawn_behavior", DespawnBehavior.DESPAWN_SMALL);
+
+        DROP_ITEMS_ON_DESPAWN = builder
+                .comment("treephysics.config.drop_items_on_despawn.tooltip")
+                .translation("treephysics.config.drop_items_on_despawn")
+                .define("drop_items_on_despawn", false);
 
         REQUIRES_AXE = builder
                 .comment("treephysics.config.requires_axe.tooltip")

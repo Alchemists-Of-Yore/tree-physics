@@ -47,11 +47,23 @@ public class ServerTreeManager extends SavedData implements TreeManager {
         this.level = level;
     }
 
+    private static final double STOPPED_THRESHOLD = 0.15;
+
     public void physicsTick(ServerLevel level, SubLevelPhysicsSystem system, PhysicsPipeline pipeline, double timeStep) {
         for (TreeData tree : this.trees.values()) {
             ServerSubLevel subLevel = (ServerSubLevel) tree.getSubLevel(this.level);
             if(subLevel == null) {
                 continue;
+            }
+
+            RigidBodyHandle handle = system.getPhysicsHandle(subLevel);
+
+            Vector3d linearVel = handle.getLinearVelocity(new Vector3d());
+            Vector3d angularVel = handle.getAngularVelocity(new Vector3d());
+            if(linearVel.length() < STOPPED_THRESHOLD && angularVel.length() < STOPPED_THRESHOLD) {
+                tree.stoppedTicks++;
+            } else {
+                tree.stoppedTicks = 0;
             }
 
             int gravityTicks = TreePhysicsConfig.GRAVITY_MULTIPLIER_TICKS.getAsInt();
@@ -61,7 +73,6 @@ public class ServerTreeManager extends SavedData implements TreeManager {
                 double gravityScale = 1.0 - TreeUtil.getUprightness(subLevel);
                 gravityScale *= TreePhysicsConfig.GRAVITY_MULTIPLIER.getAsDouble();
 
-                RigidBodyHandle handle = system.getPhysicsHandle(subLevel);
                 handle.addLinearAndAngularVelocity(gravity.mul(timeStep * gravityScale), JOMLConversion.ZERO);
             }
         }
@@ -93,6 +104,13 @@ public class ServerTreeManager extends SavedData implements TreeManager {
             }
 
             if(this.shouldDespawn(tree)) {
+                if(TreePhysicsConfig.DROP_ITEMS_ON_DESPAWN.get()) {
+                    for (BlockPos pos : TreeUtil.plotIterator(subLevel)) {
+                        if(!level.getBlockState(pos).isAir()) {
+                            level.destroyBlock(pos, true);
+                        }
+                    }
+                }
                 subLevel.markRemoved();
                 continue;
             }
@@ -240,14 +258,18 @@ public class ServerTreeManager extends SavedData implements TreeManager {
             return false;
         }
 
-        if(data.lifeTicks >= TreePhysicsConfig.DESPAWN_TIME.getAsInt()) {
-            if(behavior == TreePhysicsConfig.DespawnBehavior.DESPAWN_ALL) {
-                return true;
-            }
+        int despawnTime = TreePhysicsConfig.DESPAWN_TIME.getAsInt();
 
-            return data.logs <= 5;
+        if(despawnTime == -1) {
+            if(data.stoppedTicks < 20) return false;
+        } else if(data.lifeTicks < despawnTime) {
+            return false;
         }
 
-        return false;
+        if(behavior == TreePhysicsConfig.DespawnBehavior.DESPAWN_ALL) {
+            return true;
+        }
+
+        return data.logs <= 5;
     }
 }

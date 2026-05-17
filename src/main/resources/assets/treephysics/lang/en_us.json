@@ -8,9 +8,11 @@
   "treephysics.config.title": "Tree Physics Config",
 
   "treephysics.config.despawn_time": "Despawn Time",
-  "treephysics.config.despawn_time.tooltip": "The amount of time in ticks a tree will exist before despawning",
+  "treephysics.config.despawn_time.tooltip": "The amount of time in ticks a tree will exist before despawning. -1 to despawn when the tree stops moving",
   "treephysics.config.despawn_behavior": "Despawn Behavior",
   "treephysics.config.despawn_behavior.tooltip": "NO_DESPAWN: Trees will not despawn at all\nDESPAWN_SMALL: Trees with 5 or less logs will despawn\nDESPAWN_ALL: Every tree will despawn",
+  "treephysics.config.drop_items_on_despawn": "Drop Items on Despawn",
+  "treephysics.config.drop_items_on_despawn.tooltip": "If trees should drop their items when they despawn, when off they just get removed",
   "treephysics.config.requires_axe": "Requires Axe",
   "treephysics.config.requires_axe.tooltip": "If an axe should be required to make tree sub-levels",
   "treephysics.config.prevent_building_on_trees": "Prevent Building on Trees",
