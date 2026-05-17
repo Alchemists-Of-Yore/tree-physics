@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "com.farcr.treephysics.TreePhysicsMixinPlugin",
   "mixins": [
+    "block_placement.BlockPlaceContextMixin",
     "collision_effects.BeehiveBlockCallbackMixin",
     "collision_effects.BlockWithSubLevelCallbackMixin",
     "collision_effects.LeavesBlockMixin",

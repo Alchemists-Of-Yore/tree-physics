@@ -8,6 +8,7 @@ public class TreePhysicsConfig {
     public static final ModConfigSpec.IntValue DESPAWN_TIME;
     public static final ModConfigSpec.EnumValue<DespawnBehavior> DESPAWN_BEHAVIOR;
     public static final ModConfigSpec.BooleanValue REQUIRES_AXE;
+    public static final ModConfigSpec.BooleanValue PREVENT_BUILDING_ON_TREES;
     public static final ModConfigSpec.BooleanValue CAN_WALK_THROUGH_LEAVES;
     public static final ModConfigSpec.DoubleValue LEAF_WALKING_SPEED;
     public static final ModConfigSpec.DoubleValue TREE_ENTITY_DAMAGE;
@@ -36,6 +37,11 @@ public class TreePhysicsConfig {
                 .comment("treephysics.config.requires_axe.tooltip")
                 .translation("treephysics.config.requires_axe")
                 .define("requires_axe", false);
+
+        PREVENT_BUILDING_ON_TREES = builder
+                .comment("treephysics.config.prevent_building_on_trees.tooltip")
+                .translation("treephysics.config.prevent_building_on_trees")
+                .define("prevent_building_on_trees", true);
 
         CAN_WALK_THROUGH_LEAVES = builder
                 .comment("treephysics.config.can_walk_through_leaves.tooltip")

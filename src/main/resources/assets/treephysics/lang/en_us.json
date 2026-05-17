@@ -13,6 +13,8 @@
   "treephysics.config.despawn_behavior.tooltip": "NO_DESPAWN: Trees will not despawn at all\nDESPAWN_SMALL: Trees with 5 or less logs will despawn\nDESPAWN_ALL: Every tree will despawn",
   "treephysics.config.requires_axe": "Requires Axe",
   "treephysics.config.requires_axe.tooltip": "If an axe should be required to make tree sub-levels",
+  "treephysics.config.prevent_building_on_trees": "Prevent Building on Trees",
+  "treephysics.config.prevent_building_on_trees.tooltip": "If block placement on tree sub-levels should be prevented",
   "treephysics.config.can_walk_through_leaves": "Can Walk Through Leaves",
   "treephysics.config.can_walk_through_leaves.tooltip": "If entities should be able to walk through leaves",
   "treephysics.config.leaf_walking_speed": "Leaf Walking Speed",
