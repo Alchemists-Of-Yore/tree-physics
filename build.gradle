@@ -98,18 +98,16 @@ dependencies {
     compileOnly "dev.ryanhcode.sable-companion:sable-companion-common-$minecraft_version:$sable_companion_version"
     implementation("dev.ryanhcode.sable:sable-neoforge-${minecraft_version}:${sable_version}") {
         exclude group: "foundry.veil"
+        transitive = false
     }
-
-    // the mod doesn't actually need this i just want the outliners for debug
-    implementation("net.createmod.ponder:Ponder-NeoForge-${minecraft_version}:1.0.69")
 
     implementation "curse.maven:no-mans-land-538493:7333863"
     implementation "curse.maven:biolith-852512:8045279"
     implementation "curse.maven:mixed-litter-1221222:7240064"
 
-    compileOnly "maven.modrinth:biomes-o-plenty:$biomes_o_plenty_version"
-    compileOnly "maven.modrinth:terrablender:$terra_blender_version"
-    compileOnly "maven.modrinth:glitchcore:$glitch_core_version"
+    implementation "maven.modrinth:biomes-o-plenty:$biomes_o_plenty_version"
+    implementation "maven.modrinth:terrablender:$terra_blender_version"
+    implementation "maven.modrinth:glitchcore:$glitch_core_version"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
