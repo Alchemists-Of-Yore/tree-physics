@@ -1,8 +1,2 @@
-- Fix not being able to sprint after walking through leaves
-- Fix leaf breaking sound config applying to all leaves instead of trees only
-- Make more blocks produce dust particles
-- Make rooted dirt place under more kinds of trees
-- Add config screen
-- Add a config for trees dropping their items when despawning
-- Add a config to prevent interactions on trees
-- Add more options to leaf walking config
+- Add a config for allowing trees to fall without rooted dirt
+- Add a config to disable rooted dirt placement
