@@ -1,5 +1,6 @@
 package com.farcr.treephysics.api.flood_fill;
 
+import com.farcr.treephysics.index.TreePhysicsConfig;
 import com.farcr.treephysics.index.TreePhysicsTags;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -8,6 +9,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Collection;
@@ -18,6 +20,7 @@ public class TreeResult {
     private final Map<TagKey<Block>, Set<BlockPos>> collectedBlocks = new Object2ObjectOpenHashMap<>();
     private final Set<BlockPos> allBlocks = new ObjectOpenHashSet<>();
     private boolean root = false;
+    private boolean leaves = false;
     private Block logBlock = null;
 
     public TreeResult(Collection<TagKey<Block>> tags) {
@@ -36,9 +39,13 @@ public class TreeResult {
         this.allBlocks.add(pos);
     }
 
-    public void afterSpread(BlockGetter blockGetter, BlockPos pos) {
-        if(!this.root && blockGetter.getBlockState(pos.below()).is(TreePhysicsTags.ROOTS) && blockGetter.getBlockState(pos).is(BlockTags.LOGS)) {
-            this.root = true;
+    public void afterSpread(BlockGetter blockGetter, BlockPos pos, BlockState state) {
+        if(!this.root && state.is(BlockTags.LOGS)) {
+            BlockState belowState = blockGetter.getBlockState(pos.below());
+            this.root = TreePhysicsConfig.ROOTLESS_TREE_DETECTION.getAsBoolean() ? belowState.is(BlockTags.DIRT) : belowState.is(TreePhysicsTags.ROOTS);
+        }
+        if(!this.leaves && state.getBlock() instanceof LeavesBlock) {
+            this.leaves = !state.getValue(LeavesBlock.PERSISTENT);
         }
     }
 
@@ -52,6 +59,10 @@ public class TreeResult {
 
     public boolean hasRoot() {
         return root;
+    }
+
+    public boolean hasLeaves() {
+        return leaves;
     }
 
     public boolean isLeaf(BlockState state) {

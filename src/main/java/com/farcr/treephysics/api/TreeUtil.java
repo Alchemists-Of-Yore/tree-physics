@@ -4,6 +4,7 @@ import com.farcr.treephysics.api.flood_fill.TreeFloodFill;
 import com.farcr.treephysics.api.flood_fill.TreeResult;
 import com.farcr.treephysics.api.manager.ServerTreeManager;
 import com.farcr.treephysics.client.TreeManager;
+import com.farcr.treephysics.index.TreePhysicsConfig;
 import com.farcr.treephysics.index.TreePhysicsTags;
 import dev.ryanhcode.sable.api.SubLevelAssemblyHelper;
 import dev.ryanhcode.sable.companion.math.BoundingBox3i;
@@ -70,6 +71,11 @@ public class TreeUtil {
             .addRule(TreeUtil::logRule)
             .addTag(TreePhysicsTags.TREE);
 
+    private static final TreeFloodFill ROOTLESS_TREE_VALIDATOR = new TreeFloodFill()
+            .addRule(TreeUtil::logRule)
+            .addRule(TreeUtil::leafRule)
+            .addTag(TreePhysicsTags.TREE);
+
     private static final TreeFloodFill TREE_FINDER = new TreeFloodFill()
             .addRule(TreeUtil::logRule)
             .addRule(TreeUtil::leafRule)
@@ -79,8 +85,13 @@ public class TreeUtil {
             .addTag(TreePhysicsTags.FALLS_FROM_TREES);
 
     public static boolean isValidTree(BlockGetter blockGetter, BlockPos pos) {
-        TreeResult tree = TREE_VALIDATOR.findBlocks(blockGetter, pos);
-        return tree != null && tree.hasRoot();
+        boolean rootless = TreePhysicsConfig.ROOTLESS_TREE_DETECTION.getAsBoolean();
+        TreeResult tree = (rootless ? ROOTLESS_TREE_VALIDATOR : TREE_VALIDATOR).findBlocks(blockGetter, pos);
+        boolean isTree = tree != null && tree.hasRoot();
+        if(isTree && rootless) {
+            isTree = tree.hasLeaves();
+        }
+        return isTree;
     }
 
     public static List<ServerSubLevel> trySplit(ServerLevel level, BlockPos pos) {

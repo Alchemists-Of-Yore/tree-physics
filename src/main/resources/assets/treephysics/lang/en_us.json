@@ -13,6 +13,8 @@
   "treephysics.config.despawn_behavior.tooltip": "NO_DESPAWN: Trees will not despawn at all\nDESPAWN_SMALL: Trees with 5 or less logs will despawn\nDESPAWN_ALL: Every tree will despawn",
   "treephysics.config.drop_items_on_despawn": "Drop Items on Despawn",
   "treephysics.config.drop_items_on_despawn.tooltip": "If trees should drop their items when they despawn, when off they just get removed",
+  "treephysics.config.rootless_tree_detection": "Rootless Tree Detection",
+  "treephysics.config.rootless_tree_detection.tooltip": "Allow tree sub-levels to be created without a root block, requiring at least one dirt and one natural leaf",
   "treephysics.config.requires_axe": "Requires Axe",
   "treephysics.config.requires_axe.tooltip": "If an axe should be required to make tree sub-levels",
   "treephysics.config.prevent_interacting_with_trees": "Prevent Interacting With Trees",

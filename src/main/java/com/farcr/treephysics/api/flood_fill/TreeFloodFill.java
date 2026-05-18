@@ -50,7 +50,7 @@ public class TreeFloodFill {
 
             if(!this.shouldIgnore(centerPos)) {
                 result.add(centerPos, centerState);
-                result.afterSpread(blockGetter, centerPos);
+                result.afterSpread(blockGetter, centerPos, centerState);
             }
 
             for (BlockPos offset : TreeUtil.DIRECTION_OFFSETS_CORNERS) {

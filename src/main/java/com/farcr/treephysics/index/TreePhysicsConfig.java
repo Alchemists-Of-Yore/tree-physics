@@ -8,6 +8,7 @@ public class TreePhysicsConfig {
     public static final ModConfigSpec.IntValue DESPAWN_TIME;
     public static final ModConfigSpec.EnumValue<DespawnBehavior> DESPAWN_BEHAVIOR;
     public static final ModConfigSpec.BooleanValue DROP_ITEMS_ON_DESPAWN;
+    public static final ModConfigSpec.BooleanValue ROOTLESS_TREE_DETECTION;
     public static final ModConfigSpec.BooleanValue REQUIRES_AXE;
     public static final ModConfigSpec.BooleanValue PREVENT_INTERACTING_WITH_TREES;
     public static final ModConfigSpec.EnumValue<LeafWalkingBehavior> LEAF_WALKING_BEHAVIOR;
@@ -38,6 +39,11 @@ public class TreePhysicsConfig {
                 .comment("treephysics.config.drop_items_on_despawn.tooltip")
                 .translation("treephysics.config.drop_items_on_despawn")
                 .define("drop_items_on_despawn", false);
+
+        ROOTLESS_TREE_DETECTION = builder
+                .comment("treephysics.config.rootless_tree_detection.tooltip")
+                .translation("treephysics.config.rootless_tree_detection")
+                .define("rootless_tree_detection", false);
 
         REQUIRES_AXE = builder
                 .comment("treephysics.config.requires_axe.tooltip")
