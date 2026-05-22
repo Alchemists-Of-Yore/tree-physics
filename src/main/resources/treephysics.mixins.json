@@ -9,6 +9,7 @@
     "collision_effects.BlockWithSubLevelCallbackMixin",
     "collision_effects.LeavesBlockMixin",
     "compatibility.blueprint.BlueprintTreeFeatureMixin",
+    "compatibility.spawn.DateTreeFeatureMixin",
     "entity_damage.LivingEntityMixin",
     "rooted_dirt_placement.TreeFeatureMixin",
     "rooted_dirt_placement.TrunkPlacerMixin",

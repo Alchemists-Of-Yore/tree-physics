@@ -66,7 +66,7 @@ public class TreeResult {
     }
 
     public boolean isLeaf(BlockState state) {
-        return state.is(BlockTags.LEAVES);
+        return state.is(BlockTags.LEAVES) && state.getBlock() instanceof LeavesBlock;
     }
 
     public boolean isLog(BlockState state) {

@@ -107,6 +107,7 @@ dependencies {
     implementation "curse.maven:biolith-852512:8045279"
     implementation "curse.maven:mixed-litter-1221222:7240064"
     implementation "maven.modrinth:blueprint:8.1.0"
+    implementation "maven.modrinth:spawn-mod:4.0.4"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

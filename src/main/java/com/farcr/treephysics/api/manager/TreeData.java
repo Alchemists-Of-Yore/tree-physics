@@ -96,7 +96,7 @@ public class TreeData {
             int verticalLogs = 0;
             for (BlockPos pos : TreeUtil.plotIterator(subLevel)) {
                 BlockState state = level.getBlockState(pos);
-                if(state.is(BlockTags.LOGS)) {
+                if(state.is(BlockTags.LOGS) && state.getBlock() instanceof RotatedPillarBlock) {
                     logs++;
                     if(state.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y) {
                         verticalLogs++;
