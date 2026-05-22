@@ -91,6 +91,7 @@ public class TreePhysicsConfig {
                 If leaves in world should have physics collision.
                 This is unrelated to entities being able to walk through leaves, see "Leaf Walking Behavior" instead
                 """)
+                .worldRestart()
                 .define("static_leaf_collision", false);
 
         builder.pop();

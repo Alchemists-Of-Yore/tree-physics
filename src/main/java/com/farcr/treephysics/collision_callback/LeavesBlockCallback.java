@@ -36,13 +36,6 @@ public class LeavesBlockCallback extends FragileBlockCallback {
         final SubLevelPhysicsSystem system = SubLevelPhysicsSystem.getCurrentlySteppingSystem();
         final ServerLevel level = system.getLevel();
 
-        if(!TreePhysicsConfig.STATIC_LEAF_COLLISION.getAsBoolean()) {
-            SubLevel subLevel = Sable.HELPER.getContaining(level, pos);
-            if(subLevel == null) {
-                return new CollisionResult(JOMLConversion.ZERO, true);
-            }
-        }
-
         // Double check that we're actually fragile before breaking (in-case pipeline gave us a slightly off collision position)
         final BlockState state = level.getBlockState(pos);
 
