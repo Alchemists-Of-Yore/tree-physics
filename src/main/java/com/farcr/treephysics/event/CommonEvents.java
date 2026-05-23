@@ -102,6 +102,19 @@ public class CommonEvents {
     }
 
     @SubscribeEvent
+    public static void entityPlace(BlockEvent.EntityPlaceEvent event) {
+        if(TreePhysicsConfig.PREVENT_INTERACTING_WITH_TREES.get()) return;
+        if(event.getLevel() instanceof ServerLevel level) {
+            BlockPos pos = event.getPos();
+            ServerTreeManager manager = (ServerTreeManager) TreeManager.get(level);
+            SubLevel subLevel = Sable.HELPER.getContaining(level, pos);
+            if(manager.isTree(subLevel)) {
+                manager.unsetTree(subLevel);
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void useItemOnBlock(UseItemOnBlockEvent event) {
         if(!TreePhysicsConfig.PREVENT_INTERACTING_WITH_TREES.get()) return;
         BlockPos pos = event.getPos();
