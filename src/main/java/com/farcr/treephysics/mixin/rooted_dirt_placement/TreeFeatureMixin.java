@@ -1,6 +1,6 @@
 package com.farcr.treephysics.mixin.rooted_dirt_placement;
 
-import com.farcr.treephysics.api.TreeUtil;
+import com.farcr.treephysics.api.util.TreeUtil;
 import com.farcr.treephysics.index.TreePhysicsConfig;
 import com.farcr.treephysics.index.TreePhysicsTags;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;

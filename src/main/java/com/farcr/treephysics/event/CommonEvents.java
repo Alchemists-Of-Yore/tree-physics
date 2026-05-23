@@ -2,9 +2,10 @@ package com.farcr.treephysics.event;
 
 import com.farcr.treephysics.TreePhysics;
 import com.farcr.treephysics.api.LeafGroupManager;
-import com.farcr.treephysics.api.TreeUtil;
+import com.farcr.treephysics.api.util.TreeUtil;
 import com.farcr.treephysics.api.manager.ServerTreeManager;
 import com.farcr.treephysics.api.manager.TreeSubLevelObserver;
+import com.farcr.treephysics.api.util.FloodFillUtil;
 import com.farcr.treephysics.client.TreeManager;
 import com.farcr.treephysics.data.TreePhysicsLang;
 import com.farcr.treephysics.index.TreePhysicsCommands;
@@ -19,7 +20,6 @@ import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import dev.ryanhcode.sable.sublevel.ServerSubLevel;
 import dev.ryanhcode.sable.sublevel.SubLevel;
 import dev.ryanhcode.sable.sublevel.system.SubLevelPhysicsSystem;
-import foundry.veil.api.CodecReloadListener;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
@@ -77,7 +77,7 @@ public class CommonEvents {
                     return;
                 }
 
-                List<ServerSubLevel> subLevels = TreeUtil.trySplit((ServerLevel) level, pos);
+                List<ServerSubLevel> subLevels = FloodFillUtil.trySplit((ServerLevel) level, pos);
 
                 BlockPos belowPos = pos.below();
                 BlockState belowState = level.getBlockState(belowPos);

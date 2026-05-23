@@ -1,6 +1,6 @@
 package com.farcr.treephysics.collision_callback;
 
-import com.farcr.treephysics.api.TreeUtil;
+import com.farcr.treephysics.api.util.TreeUtil;
 import com.farcr.treephysics.api.manager.ServerTreeManager;
 import com.farcr.treephysics.api.manager.TreeData;
 import com.farcr.treephysics.client.TreeManager;

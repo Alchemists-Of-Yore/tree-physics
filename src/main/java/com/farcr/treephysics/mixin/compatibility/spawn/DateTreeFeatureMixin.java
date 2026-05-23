@@ -1,6 +1,6 @@
 package com.farcr.treephysics.mixin.compatibility.spawn;
 
-import com.farcr.treephysics.api.TreeUtil;
+import com.farcr.treephysics.api.util.TreeUtil;
 import com.farcr.treephysics.index.TreePhysicsTags;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;

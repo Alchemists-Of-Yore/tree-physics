@@ -1,6 +1,6 @@
 package com.farcr.treephysics.mixin.tree_pushing;
 
-import com.farcr.treephysics.api.TreeUtil;
+import com.farcr.treephysics.api.util.TreeUtil;
 import com.farcr.treephysics.client.TreeManager;
 import com.farcr.treephysics.index.TreePhysicsConfig;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;

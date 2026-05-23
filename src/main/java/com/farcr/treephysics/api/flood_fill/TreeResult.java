@@ -1,6 +1,6 @@
 package com.farcr.treephysics.api.flood_fill;
 
-import com.farcr.treephysics.api.TreeUtil;
+import com.farcr.treephysics.api.util.TreeUtil;
 import com.farcr.treephysics.index.TreePhysicsConfig;
 import com.farcr.treephysics.index.TreePhysicsTags;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;

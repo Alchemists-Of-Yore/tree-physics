@@ -1,6 +1,7 @@
 package com.farcr.treephysics.api.flood_fill;
 
-import com.farcr.treephysics.api.TreeUtil;
+import com.farcr.treephysics.api.util.TreeUtil;
+import com.farcr.treephysics.api.util.FloodFillUtil;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.TagKey;
@@ -52,7 +53,7 @@ public class TreeFloodFill {
                 result.afterSpread(blockGetter, centerPos, centerState);
             }
 
-            for (BlockPos offset : TreeUtil.DIRECTION_OFFSETS_CORNERS) {
+            for (BlockPos offset : FloodFillUtil.DIRECTION_OFFSETS_CORNERS) {
                 BlockPos nextPos = centerPos.offset(offset);
                 if(visited.contains(nextPos.asLong())) {
                     continue;

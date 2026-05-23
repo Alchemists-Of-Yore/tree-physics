@@ -1,4 +1,4 @@
-package com.farcr.treephysics.api;
+package com.farcr.treephysics.api.util;
 
 import com.farcr.treephysics.api.flood_fill.TreeFloodFill;
 import com.farcr.treephysics.api.flood_fill.TreeResult;
@@ -8,28 +8,20 @@ import com.farcr.treephysics.index.TreePhysicsConfig;
 import com.farcr.treephysics.index.TreePhysicsTags;
 import dev.ryanhcode.sable.api.SubLevelAssemblyHelper;
 import dev.ryanhcode.sable.companion.math.BoundingBox3i;
-import dev.ryanhcode.sable.companion.math.BoundingBox3ic;
 import dev.ryanhcode.sable.physics.config.block_properties.PhysicsBlockPropertyHelper;
 import dev.ryanhcode.sable.sublevel.ServerSubLevel;
-import dev.ryanhcode.sable.sublevel.SubLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.HugeMushroomBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3d;
-import org.joml.Vector3dc;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class TreeUtil {
+public class FloodFillUtil {
     public static final BlockPos[] DIRECTION_OFFSETS_CORNERS = new BlockPos[] {
             new BlockPos(1, 0, 0),
             new BlockPos(-1, 0, 0),
@@ -59,33 +51,20 @@ public class TreeUtil {
             new BlockPos(-1, -1, 1)
     };
 
-    private static final Vector3d DIRECTION = new Vector3d();
-    private static final Vector3dc UP = new Vector3d(0, 1, 0);
-
-    public static double getUprightness(SubLevel subLevel) {
-        Vector3d direction = subLevel.logicalPose().transformNormal(DIRECTION.set(UP));
-        return Math.max(0, direction.dot(UP));
-    }
-
-    public static Iterable<BlockPos> plotIterator(SubLevel subLevel) {
-        BoundingBox3ic box = subLevel.getPlot().getBoundingBox();
-        return BlockPos.betweenClosed(box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ());
-    }
-
     private static final TreeFloodFill TREE_VALIDATOR = new TreeFloodFill()
-            .addRule(TreeUtil::logRule)
+            .addRule(FloodFillUtil::logRule)
             .addTag(TreePhysicsTags.TREE);
 
     private static final TreeFloodFill ROOTLESS_TREE_VALIDATOR = new TreeFloodFill()
-            .addRule(TreeUtil::logRule)
-            .addRule(TreeUtil::leafRule)
+            .addRule(FloodFillUtil::logRule)
+            .addRule(FloodFillUtil::leafRule)
             .addTag(TreePhysicsTags.TREE);
 
     private static final TreeFloodFill TREE_FINDER = new TreeFloodFill()
-            .addRule(TreeUtil::logRule)
-            .addRule(TreeUtil::leafRule)
-            .addRule(TreeUtil::attachmentRule)
-            .addRule(TreeUtil::fallingBlockRule)
+            .addRule(FloodFillUtil::logRule)
+            .addRule(FloodFillUtil::leafRule)
+            .addRule(FloodFillUtil::attachmentRule)
+            .addRule(FloodFillUtil::fallingBlockRule)
             .addTag(TreePhysicsTags.TREE)
             .addTag(TreePhysicsTags.FALLS_FROM_TREES);
 
@@ -139,15 +118,15 @@ public class TreeUtil {
     }
 
     public static boolean logRule(BlockPos fromPos, BlockPos toPos, BlockState fromState, BlockState toState, TreeResult result) {
-        if(isLog(fromState) && isLog(toState)) {
+        if(TreeUtil.isLog(fromState) && TreeUtil.isLog(toState)) {
             if(fromState.getBlock() == toState.getBlock()) {
                 return true;
             } else {
                 BlockPos relative = toPos.subtract(fromPos);
                 Direction direction = Direction.getNearest(relative.getX(), relative.getY(), relative.getZ());
 
-                Direction.Axis fromAxis = getLogAxis(fromState);
-                Direction.Axis toAxis = getLogAxis(toState);
+                Direction.Axis fromAxis = TreeUtil.getLogAxis(fromState);
+                Direction.Axis toAxis = TreeUtil.getLogAxis(toState);
                 return fromAxis == direction.getAxis() && toAxis == direction.getAxis();
             }
         }
@@ -156,14 +135,14 @@ public class TreeUtil {
     }
 
     public static boolean leafRule(BlockPos fromPos, BlockPos toPos, BlockState fromState, BlockState toState, TreeResult result) {
-        if(isLog(fromState) && isLeaf(toState)) {
+        if(TreeUtil.isLog(fromState) && TreeUtil.isLeaf(toState)) {
             return true;
         }
 
-        if(isLeaf(fromState) && isLeaf(toState)) {
-            if(isSameLeafType(fromState, toState)) {
-                int fromDistance = getLeafDistance(fromState, fromPos, result);
-                int toDistance = getLeafDistance(toState, toPos, result);
+        if(TreeUtil.isLeaf(fromState) && TreeUtil.isLeaf(toState)) {
+            if(TreeUtil.isSameLeafType(fromState, toState)) {
+                int fromDistance = TreeUtil.getLeafDistance(fromState, fromPos, result);
+                int toDistance = TreeUtil.getLeafDistance(toState, toPos, result);
                 return toDistance > fromDistance;
             }
         }
@@ -178,82 +157,4 @@ public class TreeUtil {
     public static boolean fallingBlockRule(BlockPos fromPos, BlockPos toPos, BlockState fromState, BlockState toState, TreeResult result) {
         return !fromState.is(TreePhysicsTags.FALLS_FROM_TREES) && toState.is(TreePhysicsTags.FALLS_FROM_TREES);
     }
-
-    public static boolean isRoot(BlockState state) {
-        return state.is(TreePhysicsTags.ROOTS);
-    }
-
-    public static boolean isLog(BlockState state) {
-        return state.is(TreePhysicsTags.LOGS);
-    }
-
-    public static boolean isLeaf(BlockState state) {
-        return state.is(TreePhysicsTags.LEAVES);
-    }
-
-    public static boolean isSameLeafType(BlockState first, BlockState second) {
-        Block firstBlock = first.getBlock();
-        Block secondBlock = second.getBlock();
-        if(firstBlock == secondBlock) {
-            return true;
-        }
-
-        Set<Block> group = LeafGroupManager.GROUPS.get(firstBlock);
-        if(group != null) {
-            return group.contains(secondBlock);
-        }
-
-        return false;
-    }
-
-    public static boolean isLeafPersistent(BlockState state) {
-        if(isLeaf(state)) {
-            if(state.hasProperty(BlockStateProperties.PERSISTENT)) {
-                return state.getValue(BlockStateProperties.PERSISTENT);
-            } else {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public static int getLeafDistance(BlockState state, BlockPos pos, TreeResult result) {
-        int distance = getLeafDistanceRaw(state);
-        if(distance > 0) {
-            return distance;
-        } else {
-            BlockPos start = new BlockPos(result.getStart().getX(), pos.getY(), result.getStart().getZ());
-            return Math.clamp(pos.distManhattan(start), 1, BlockStateProperties.MAX_DISTANCE);
-        }
-    }
-
-    public static int getLeafDistanceRaw(BlockState state) {
-        if(state.hasProperty(BlockStateProperties.DISTANCE)) {
-            return state.getValue(BlockStateProperties.DISTANCE);
-        }
-
-        return 0;
-    }
-
-    public static @Nullable Direction.Axis getLogAxis(BlockState state) {
-        if(isLog(state)) {
-            if(state.hasProperty(BlockStateProperties.AXIS)) {
-                return state.getValue(BlockStateProperties.AXIS);
-            }
-
-            if(state.getBlock() instanceof HugeMushroomBlock) {
-                if(!state.getValue(HugeMushroomBlock.UP) && !state.getValue(HugeMushroomBlock.DOWN)) {
-                    return Direction.Axis.Y;
-                } else if (!state.getValue(HugeMushroomBlock.EAST) && !state.getValue(HugeMushroomBlock.WEST)) {
-                    return Direction.Axis.X;
-                } else if (!state.getValue(HugeMushroomBlock.NORTH) && !state.getValue(HugeMushroomBlock.SOUTH)) {
-                    return Direction.Axis.Z;
-                }
-            }
-        }
-
-        return null;
-    }
-
 }

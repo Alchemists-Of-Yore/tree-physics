@@ -1,6 +1,6 @@
 package com.farcr.treephysics.api.manager;
 
-import com.farcr.treephysics.api.TreeUtil;
+import com.farcr.treephysics.api.util.TreeUtil;
 import com.farcr.treephysics.client.TreeManager;
 import com.farcr.treephysics.index.TreePhysicsConfig;
 import com.farcr.treephysics.networking.UpdateClientTrees;

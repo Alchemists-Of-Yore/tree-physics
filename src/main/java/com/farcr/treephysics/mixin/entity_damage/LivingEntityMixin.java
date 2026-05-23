@@ -1,6 +1,6 @@
 package com.farcr.treephysics.mixin.entity_damage;
 
-import com.farcr.treephysics.api.TreeUtil;
+import com.farcr.treephysics.api.util.TreeUtil;
 import com.farcr.treephysics.client.TreeManager;
 import com.farcr.treephysics.index.TreePhysicsConfig;
 import com.farcr.treephysics.mixinterface.LivingEntityExtension;

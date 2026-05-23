@@ -1,6 +1,6 @@
 package com.farcr.treephysics.api.manager;
 
-import com.farcr.treephysics.api.TreeUtil;
+import com.farcr.treephysics.api.util.TreeUtil;
 import com.farcr.treephysics.index.TreePhysicsSounds;
 import com.farcr.treephysics.index.TreePhysicsTags;
 import com.farcr.treephysics.particle.collision_dust.CollisionDustParticleOptions;
