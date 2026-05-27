@@ -15,6 +15,7 @@ public class TreePhysicsConfig {
     public static final ModConfigSpec.BooleanValue DROP_ITEMS_ON_DESPAWN;
     public static final ModConfigSpec.BooleanValue ROOTED_DIRT_GENERATION;
     public static final ModConfigSpec.BooleanValue REMOVE_ROOTED_DIRT;
+    public static final ModConfigSpec.BooleanValue DROP_HANGING_ROOTS;
     public static final ModConfigSpec.BooleanValue ROOTLESS_TREE_DETECTION;
     public static final ModConfigSpec.BooleanValue REQUIRES_AXE;
     public static final ModConfigSpec.BooleanValue PREVENT_INTERACTING_WITH_TREES;
@@ -53,6 +54,9 @@ public class TreePhysicsConfig {
 
         REMOVE_ROOTED_DIRT = create(builder, "Remove Rooted Dirt", "If rooted dirt should be converted to dirt when the log above it is broken")
                 .define("remove_rooted_dirt", true);
+
+        DROP_HANGING_ROOTS = create(builder, "Drop Hanging Roots", "If Hanging Roots should drop when rooted dirt is removed")
+                .define("drop_hanging_roots", false);
 
         ROOTLESS_TREE_DETECTION = create(builder, "Rootless Tree Detection", "Allow tree sub-levels to be created without a root block, requiring at least one dirt and one natural leaf instead")
                 .define("rootless_tree_detection", false);

@@ -5,6 +5,8 @@
   "treephysics.config.despawn_behavior.tooltip": "NO_DESPAWN: Trees will not despawn at all\nDESPAWN_SMALL: Trees with an amount of logs less than or equal to the value of SMALL_TREE_MAXIMUM will despawn\nDESPAWN_ALL: Every tree will despawn\n",
   "treephysics.config.despawn_time": "Despawn Time",
   "treephysics.config.despawn_time.tooltip": "The amount of time in ticks a tree will exist before despawning. -1 to despawn when the tree stops moving",
+  "treephysics.config.drop_hanging_roots": "Drop Hanging Roots",
+  "treephysics.config.drop_hanging_roots.tooltip": "If Hanging Roots should drop when rooted dirt is removed",
   "treephysics.config.drop_items_on_despawn": "Drop Items on Despawn",
   "treephysics.config.drop_items_on_despawn.tooltip": "If trees should drop their items when they despawn, when off they just get removed",
   "treephysics.config.extra_push_multiplier": "Extra Push Multiplier",

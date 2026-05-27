@@ -28,9 +28,11 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelSimulatedReader;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
@@ -82,6 +84,9 @@ public class CommonEvents {
                 BlockPos belowPos = pos.below();
                 BlockState belowState = level.getBlockState(belowPos);
                 if(TreeUtil.isRoot(belowState) && TreePhysicsConfig.REMOVE_ROOTED_DIRT.get()) {
+                    if(TreePhysicsConfig.DROP_HANGING_ROOTS.get()) {
+                        Block.popResourceFromFace(level, belowPos, Direction.UP, Blocks.HANGING_ROOTS.asItem().getDefaultInstance());
+                    }
                     level.setBlock(belowPos, Blocks.DIRT.defaultBlockState(), 2);
                 }
 
