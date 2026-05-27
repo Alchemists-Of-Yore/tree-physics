@@ -1,9 +1,7 @@
 package com.farcr.treephysics.api;
 
 import com.farcr.treephysics.TreePhysics;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
@@ -33,25 +31,21 @@ public class LeafGroupManager extends SimplePreparableReloadListener<Map<Resourc
     @Override
     protected Map<ResourceLocation, Set<ResourceLocation>> prepare(ResourceManager resourceManager, ProfilerFiller profiler) {
         Map<ResourceLocation, Set<ResourceLocation>> map = new Object2ObjectOpenHashMap<>();
-
-        Codec<List<List<ResourceLocation>>> codec = ResourceLocation.CODEC.listOf().listOf();
+        Map<String, Set<ResourceLocation>> groupMap = new Object2ObjectOpenHashMap<>();
 
         for (String modId : resourceManager.getNamespaces()) {
             for (Resource resource : resourceManager.getResourceStack(ResourceLocation.fromNamespaceAndPath(modId, PATH))) {
                 try (Reader reader = resource.openAsReader()) {
                     JsonElement element = JsonParser.parseReader(reader);
-                    if(element.isJsonObject() && element.getAsJsonObject().has("groups")) {
-                        JsonElement groupsList = element.getAsJsonObject().get("groups");
+                    if(element.isJsonObject() && element.getAsJsonObject().has("groups") && element.getAsJsonObject().get("groups").isJsonObject()) {
+                        JsonObject groups = element.getAsJsonObject().get("groups").getAsJsonObject();
 
-                        DataResult<List<List<ResourceLocation>>> result = codec.parse(JsonOps.INSTANCE, groupsList);
-                        if(result.isSuccess()) {
-                            List<List<ResourceLocation>> groups = result.getOrThrow();
-
-                            for (List<ResourceLocation> group : groups) {
-                                for (ResourceLocation groupMember : group) {
-                                    Set<ResourceLocation> set = map.computeIfAbsent(groupMember, rl -> new ObjectOpenHashSet<>());
-                                    set.addAll(group.stream().filter(v -> v != groupMember).toList());
-                                }
+                        for (String key : groups.keySet()) {
+                            JsonElement list = groups.get(key);
+                            DataResult<List<ResourceLocation>> result = ResourceLocation.CODEC.listOf().parse(JsonOps.INSTANCE, list);
+                            if(result.isSuccess()) {
+                                groupMap.computeIfAbsent(key, k -> new ObjectOpenHashSet<>())
+                                        .addAll(result.getOrThrow());
                             }
                         }
 
@@ -59,6 +53,13 @@ public class LeafGroupManager extends SimplePreparableReloadListener<Map<Resourc
                 } catch (IOException | JsonParseException e) {
                     throw new RuntimeException(e);
                 }
+            }
+        }
+
+        for (Set<ResourceLocation> group : groupMap.values()) {
+            for (ResourceLocation groupMember : group) {
+                Set<ResourceLocation> set = map.computeIfAbsent(groupMember, rl -> new ObjectOpenHashSet<>());
+                set.addAll(group.stream().filter(v -> v != groupMember).toList());
             }
         }
 

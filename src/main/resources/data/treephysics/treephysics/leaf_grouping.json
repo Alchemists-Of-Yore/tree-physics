@@ -1,15 +1,16 @@
 {
-  "groups": [
-    ["minecraft:azalea_leaves", "minecraft:flowering_azalea_leaves"],
+  "groups": {
+    "minecraft:azalea": ["minecraft:azalea_leaves", "minecraft:flowering_azalea_leaves"],
 
-    [
+    "minecraft:oak": [
       "minecraft:oak_leaves",
       "nomansland:apple_fruit_leaves",
       "biomesoplenty:flowering_oak_leaves"
     ],
-    ["nomansland:autumnal_oak_leaves", "nomansland:pear_fruit_leaves"],
 
-    [
+    "nomansland:autumnal_oak": ["nomansland:autumnal_oak_leaves", "nomansland:pear_fruit_leaves"],
+
+    "environmental:wisteria": [
       "environmental:wisteria_leaves",
       "environmental:pink_wisteria_leaves",
       "environmental:purple_wisteria_leaves",
@@ -17,15 +18,15 @@
       "environmental:white_wisteria_leaves"
     ],
 
-    ["atmospheric:morado_leaves", "atmospheric:flowering_morado_leaves"],
+    "atmospheric:morado": ["atmospheric:morado_leaves", "atmospheric:flowering_morado_leaves"],
 
-    ["bountifulfares:apple_leaves", "bountifulfares:flowering_apple_leaves"],
-    ["bountifulfares:orange_leaves", "bountifulfares:flowering_orange_leaves"],
-    ["bountifulfares:lemon_leaves", "bountifulfares:flowering_lemon_leaves"],
-    ["bountifulfares:plum_leaves", "bountifulfares:flowering_plum_leaves"],
-    ["bountifulfares:golden_apple_leaves", "bountifulfares:flowering_golden_apple_leaves"],
+    "bountifulfares:apple": ["bountifulfares:apple_leaves", "bountifulfares:flowering_apple_leaves"],
+    "bountifulfares:orange": ["bountifulfares:orange_leaves", "bountifulfares:flowering_orange_leaves"],
+    "bountifulfares:lemon": ["bountifulfares:lemon_leaves", "bountifulfares:flowering_lemon_leaves"],
+    "bountifulfares:plum": ["bountifulfares:plum_leaves", "bountifulfares:flowering_plum_leaves"],
+    "bountifulfares:golden_apple": ["bountifulfares:golden_apple_leaves", "bountifulfares:flowering_golden_apple_leaves"],
 
-    [
+    "burnt:smoldering": [
       "burnt:burnt_leaves",
       "burnt:smoldering_leaves",
       "burnt:smoldering_leaves_2",
@@ -34,31 +35,32 @@
       "burnt:smoldering_leaves_5"
     ],
 
-    [
+    "biomeswevegone:baobab": [
       "biomeswevegone:baobab_leaves",
       "biomeswevegone:ripe_baobab_leaves",
       "biomeswevegone:flowering_baobab_leaves"
     ],
-    [
+    "biomeswevegone:orchard": [
       "biomeswevegone:orchard_leaves",
       "biomeswevegone:ripe_orchard_leaves",
       "biomeswevegone:flowering_orchard_leaves"
     ],
-    [
+    "biomeswevegone:yucca": [
       "biomeswevegone:yucca_leaves",
       "biomeswevegone:ripe_yucca_leaves",
       "biomeswevegone:flowering_yucca_leaves"
     ],
-    [
+    "biomeswevegone:skyris": [
       "biomeswevegone:skyris_leaves",
       "biomeswevegone:green_apple_skyris_leaves",
       "biomeswevegone:flowering_skyris_leaves"
     ],
-    ["biomeswevegone:ironwood_leaves", "biomeswevegone:flowering_ironwood_leaves"],
-    ["biomeswevegone:spirit_leaves", "biomeswevegone:flowering_spirit_leaves"],
-    ["biomeswevegone:indigo_jacaranda_leaves", "biomeswevegone:flowering_indigo_jacaranda_leaves"],
-    ["biomeswevegone:jacaranda_leaves", "biomeswevegone:flowering_jacaranda_leaves"],
-    ["biomeswevegone:palo_verde_leaves", "biomeswevegone:flowering_palo_verde_leaves"],
-    ["biomeswevegone:witch_hazel_leaves", "biomeswevegone:blooming_witch_hazel_leaves"]
-  ]
+
+    "biomeswevegone:ironwood": ["biomeswevegone:ironwood_leaves", "biomeswevegone:flowering_ironwood_leaves"],
+    "biomeswevegone:spirit": ["biomeswevegone:spirit_leaves", "biomeswevegone:flowering_spirit_leaves"],
+    "biomeswevegone:indigo_jacaranda": ["biomeswevegone:indigo_jacaranda_leaves", "biomeswevegone:flowering_indigo_jacaranda_leaves"],
+    "biomeswevegone:jacaranda": ["biomeswevegone:jacaranda_leaves", "biomeswevegone:flowering_jacaranda_leaves"],
+    "biomeswevegone:palo_verde": ["biomeswevegone:palo_verde_leaves", "biomeswevegone:flowering_palo_verde_leaves"],
+    "biomeswevegone:witch_hazel": ["biomeswevegone:witch_hazel_leaves", "biomeswevegone:blooming_witch_hazel_leaves"]
+  }
 }
