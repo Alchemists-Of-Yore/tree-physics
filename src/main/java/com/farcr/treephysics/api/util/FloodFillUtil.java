@@ -118,7 +118,7 @@ public class FloodFillUtil {
 
     public static boolean logRule(BlockPos fromPos, BlockPos toPos, BlockState fromState, BlockState toState, TreeResult result) {
         if(TreeUtil.isLog(fromState) && TreeUtil.isLog(toState)) {
-            if(fromState.getBlock() == toState.getBlock()) {
+            if(TreeUtil.isSameLogType(fromState, toState)) {
                 return true;
             } else {
                 BlockPos relative = toPos.subtract(fromPos);

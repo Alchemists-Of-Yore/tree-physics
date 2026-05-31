@@ -1,6 +1,6 @@
 package com.farcr.treephysics.api.util;
 
-import com.farcr.treephysics.api.LeafGroupManager;
+import com.farcr.treephysics.api.grouping.BlockGroupingManager;
 import com.farcr.treephysics.api.flood_fill.TreeResult;
 import com.farcr.treephysics.index.TreePhysicsTags;
 import dev.ryanhcode.sable.companion.math.BoundingBox3i;
@@ -8,9 +8,9 @@ import dev.ryanhcode.sable.companion.math.BoundingBox3ic;
 import dev.ryanhcode.sable.sublevel.SubLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.LevelSimulatedReader;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HugeMushroomBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,10 +20,12 @@ import org.joml.Vector3d;
 import org.joml.Vector3dc;
 
 import java.util.List;
-import java.util.Set;
+
+import static com.farcr.treephysics.TreePhysics.path;
 
 public class TreeUtil {
-
+    private static final ResourceLocation LEAF_GROUPS = path("leaves");
+    private static final ResourceLocation LOG_GROUPS = path("logs");
     private static final Vector3d DIRECTION = new Vector3d();
     private static final Vector3dc UP = new Vector3d(0, 1, 0);
 
@@ -60,19 +62,14 @@ public class TreeUtil {
         return level.isStateAtPosition(pos, TreeUtil::canBeRoots);
     }
 
+    public static boolean isSameLogType(BlockState first, BlockState second) {
+        return BlockGroupingManager.GROUPS_MAP.get(LOG_GROUPS)
+                .isSameType(first, second);
+    }
+
     public static boolean isSameLeafType(BlockState first, BlockState second) {
-        Block firstBlock = first.getBlock();
-        Block secondBlock = second.getBlock();
-        if(firstBlock == secondBlock) {
-            return true;
-        }
-
-        Set<Block> group = LeafGroupManager.GROUPS.get(firstBlock);
-        if(group != null) {
-            return group.contains(secondBlock);
-        }
-
-        return false;
+        return BlockGroupingManager.GROUPS_MAP.get(LEAF_GROUPS)
+                .isSameType(first, second);
     }
 
     public static boolean isLeafPersistent(BlockState state) {

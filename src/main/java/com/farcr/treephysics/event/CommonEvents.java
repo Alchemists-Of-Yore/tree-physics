@@ -1,7 +1,7 @@
 package com.farcr.treephysics.event;
 
 import com.farcr.treephysics.TreePhysics;
-import com.farcr.treephysics.api.LeafGroupManager;
+import com.farcr.treephysics.api.grouping.BlockGroupingManager;
 import com.farcr.treephysics.api.manager.ServerTreeManager;
 import com.farcr.treephysics.api.manager.TreeSubLevelObserver;
 import com.farcr.treephysics.api.util.FloodFillUtil;
@@ -28,7 +28,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelSimulatedReader;
@@ -163,7 +162,7 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void addReloadListener(AddReloadListenerEvent event) {
-        event.addListener(LeafGroupManager.INSTANCE);
+        event.addListener(BlockGroupingManager.INSTANCE);
     }
 
     @EventBusSubscriber(modid = TreePhysics.MOD_ID)
