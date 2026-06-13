@@ -18,6 +18,7 @@ dependencies {
     }
 
     modImplementation "dev.ryanhcode.sable-companion:sable-companion-fabric-$minecraft_version:$sable_companion_version"
+    compileOnly "dev.ryanhcode.sable:sable-sable_rapier-$minecraft_version:$sable_version"
     modImplementation("dev.ryanhcode.sable:sable-fabric-$minecraft_version:$sable_version") {
         exclude group: "foundry.veil"
     }

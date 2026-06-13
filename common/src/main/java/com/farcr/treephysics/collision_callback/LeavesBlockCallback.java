@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
 public class LeavesBlockCallback extends FragileBlockCallback {
@@ -23,7 +24,7 @@ public class LeavesBlockCallback extends FragileBlockCallback {
     }
 
     @Override
-    public CollisionResult sable$onCollision(BlockPos pos, Vector3d pos1, double impactVelocity) {
+    public CollisionResult sable$onCollision(BlockPos pos, @Nullable BlockPos otherHitBlockPos, Vector3d pos1, double impactVelocity) {
         final double triggerVelocity = this.getTriggerVelocity();
 
         if (impactVelocity * impactVelocity < triggerVelocity * triggerVelocity) {

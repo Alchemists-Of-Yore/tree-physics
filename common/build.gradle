@@ -27,6 +27,7 @@ dependencies {
     }
 
     compileOnly "dev.ryanhcode.sable-companion:sable-companion-common-$minecraft_version:$sable_companion_version"
+    compileOnly "dev.ryanhcode.sable:sable-sable_rapier-$minecraft_version:$sable_version"
     implementation ("dev.ryanhcode.sable:sable-common-${minecraft_version}:${sable_version}") {
         exclude group: "foundry.veil"
     }

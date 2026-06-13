@@ -31,7 +31,7 @@
     "fabricloader": ">=${fabric_loader_version}",
     "fabric-api": "*",
     "minecraft": "${minecraft_version}",
-    "sable": ">=${sable_version_min}",
+    "sable": ">=${sable_version_min} <${sable_version_max}",
     "java": ">=${java_version}"
   },
   "suggests": {
