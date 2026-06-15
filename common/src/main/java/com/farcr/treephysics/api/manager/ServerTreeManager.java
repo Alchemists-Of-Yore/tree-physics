@@ -49,9 +49,11 @@ public class ServerTreeManager extends SavedData implements TreeManager {
     private static final double STOPPED_THRESHOLD = 0.15;
 
     public void physicsTick(ServerLevel level, SubLevelPhysicsSystem system, PhysicsPipeline pipeline, double timeStep) {
+        if(this.trees.isEmpty()) return;
+
         for (TreeData tree : this.trees.values()) {
             ServerSubLevel subLevel = (ServerSubLevel) tree.getSubLevel(this.level);
-            if(subLevel == null) {
+            if(subLevel == null || subLevel.isRemoved()) {
                 continue;
             }
 
@@ -78,6 +80,8 @@ public class ServerTreeManager extends SavedData implements TreeManager {
     }
 
     public void tick() {
+        if(this.trees.isEmpty()) return;
+
         for (TreeData tree : this.trees.values()) {
             SubLevel subLevel = tree.getSubLevel(this.level);
             if(subLevel == null) {
