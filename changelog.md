@@ -1,1 +1,3 @@
-- Update to Sable 2.0.0
+- Fix random crash when trees are chopped down
+- Fix crawling when trying to walk through leaves
+- Fix F5 camera colliding with leaves
