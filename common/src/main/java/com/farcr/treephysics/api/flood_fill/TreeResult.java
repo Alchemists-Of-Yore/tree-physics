@@ -10,12 +10,13 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-public class TreeResult {
+public class TreeResult implements Comparable<TreeResult> {
     private final Map<TagKey<Block>, Set<BlockPos>> collectedBlocks = new Object2ObjectOpenHashMap<>();
     private final BlockPos start;
     private final Set<BlockPos> allBlocks = new ObjectOpenHashSet<>();
@@ -76,5 +77,10 @@ public class TreeResult {
 
     public BlockPos getStart() {
         return start;
+    }
+
+    @Override
+    public int compareTo(@NotNull TreeResult result) {
+        return (int) Math.signum(result.getBlocks().size() - this.getBlocks().size());
     }
 }

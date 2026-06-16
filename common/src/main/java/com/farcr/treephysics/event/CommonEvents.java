@@ -1,5 +1,6 @@
 package com.farcr.treephysics.event;
 
+import com.farcr.treephysics.api.flood_fill.TreeResult;
 import com.farcr.treephysics.api.manager.ServerTreeManager;
 import com.farcr.treephysics.api.manager.TreeManager;
 import com.farcr.treephysics.api.manager.TreeSubLevelObserver;
@@ -7,10 +8,12 @@ import com.farcr.treephysics.api.util.FloodFillUtil;
 import com.farcr.treephysics.api.util.TreeUtil;
 import com.farcr.treephysics.index.TreePhysicsConfig;
 import dev.ryanhcode.sable.Sable;
+import dev.ryanhcode.sable.api.SubLevelAssemblyHelper;
 import dev.ryanhcode.sable.api.physics.PhysicsPipeline;
 import dev.ryanhcode.sable.api.physics.handle.RigidBodyHandle;
 import dev.ryanhcode.sable.api.sublevel.ServerSubLevelContainer;
 import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
+import dev.ryanhcode.sable.companion.math.BoundingBox3i;
 import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import dev.ryanhcode.sable.sublevel.ServerSubLevel;
 import dev.ryanhcode.sable.sublevel.SubLevel;
@@ -28,6 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3d;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CommonEvents {
@@ -39,11 +43,20 @@ public class CommonEvents {
     public static void playerBreakBlock(Level level, Player player, BlockPos pos) {
         BlockState brokenState = level.getBlockState(pos);
         ServerTreeManager manager = (ServerTreeManager) TreeManager.get(level);
+        ServerLevel serverLevel = (ServerLevel) level;
 
         if(TreeUtil.isLog(brokenState)) {
             if(manager.isTree(pos)) {
-                SubLevel tree = manager.getTree(pos);
-                manager.decrementLogs(tree);
+                List<TreeResult> treeResults = FloodFillUtil.findTreesAround(serverLevel, pos);
+                if(treeResults.size() > 1) {
+                    treeResults = new ArrayList<>(treeResults.stream().sorted().toList());
+                    treeResults.removeFirst();
+                    for (TreeResult tree : treeResults) {
+                        BoundingBox3i box = BoundingBox3i.from(tree.getBlocks());
+                        SubLevelAssemblyHelper.assembleBlocks(serverLevel, pos, tree.getBlocks(), box);
+                    }
+                }
+
                 return;
             }
 
@@ -52,7 +65,7 @@ public class CommonEvents {
                     return;
                 }
 
-                List<ServerSubLevel> subLevels = FloodFillUtil.trySplit((ServerLevel) level, pos);
+                List<ServerSubLevel> subLevels = FloodFillUtil.trySplit(serverLevel, pos);
 
                 BlockPos belowPos = pos.below();
                 BlockState belowState = level.getBlockState(belowPos);

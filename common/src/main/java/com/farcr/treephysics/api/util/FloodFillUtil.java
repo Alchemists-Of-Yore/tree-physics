@@ -10,6 +10,7 @@ import dev.ryanhcode.sable.api.SubLevelAssemblyHelper;
 import dev.ryanhcode.sable.companion.math.BoundingBox3i;
 import dev.ryanhcode.sable.physics.config.block_properties.PhysicsBlockPropertyHelper;
 import dev.ryanhcode.sable.sublevel.ServerSubLevel;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -82,16 +83,15 @@ public class FloodFillUtil {
             return List.of();
         }
 
-        TreeFloodFill floodFill = TREE_FINDER.ignore(pos);
-
         List<ServerSubLevel> subLevels = new ArrayList<>();
         ServerTreeManager manager = (ServerTreeManager) TreeManager.get(level);
 
-        for (BlockPos offset : DIRECTION_OFFSETS_CORNERS) {
-            BlockPos start = pos.offset(offset);
+        List<TreeResult> treeResults = findTreesAround(level, pos);
+        if(treeResults.isEmpty()) {
+            return subLevels;
+        }
 
-            TreeResult tree = floodFill.findBlocks(level, start);
-
+        for (TreeResult tree : treeResults) {
             if(tree != null && !(TreePhysicsConfig.ROOTLESS_TREE_DETECTION.get() ? tree.hasRoot() || tree.hasDirt() : tree.hasRoot())) {
                 Set<BlockPos> treeBlocks = tree.getBlocks(TreePhysicsTags.TREE);
                 ServerSubLevel subLevel = SubLevelAssemblyHelper.assembleBlocks(level, pos, treeBlocks, new BoundingBox3i(pos, pos));
@@ -111,9 +111,30 @@ public class FloodFillUtil {
                     level.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 2);
                 }
             }
-
         }
+
         return subLevels;
+    }
+
+    public static List<TreeResult> findTreesAround(ServerLevel level, BlockPos pos) {
+        List<TreeResult> results = new ArrayList<>();
+        LongOpenHashSet blocksFound = new LongOpenHashSet();
+        TreeFloodFill floodFill = TREE_FINDER.ignore(pos);
+
+        for (BlockPos offset : DIRECTION_OFFSETS_CORNERS) {
+            BlockPos startPos = pos.offset(offset);
+            if(blocksFound.contains(startPos.asLong())) continue;
+
+            TreeResult result = floodFill.findBlocks(level, startPos);
+            if(result == null) continue;
+
+            results.add(result);
+            for (BlockPos block : result.getBlocks()) {
+                blocksFound.add(block.asLong());
+            }
+        }
+
+        return results;
     }
 
     public static boolean logRule(BlockPos fromPos, BlockPos toPos, BlockState fromState, BlockState toState, TreeResult result) {
