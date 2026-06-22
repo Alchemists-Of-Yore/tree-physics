@@ -51,7 +51,7 @@ public class TreeResult implements Comparable<TreeResult> {
         }
         if(!this.dirt && TreeUtil.isLog(state)) {
             BlockState belowState = blockGetter.getBlockState(pos.below());
-            this.dirt = belowState.is(BlockTags.DIRT);
+            this.dirt = belowState.is(TreePhysicsTags.GROUND);
         }
     }
 
