@@ -1,6 +1,8 @@
 {
   "commands.treephysics.untree.success": "Unset %s tree%s",
   "death.attack.tree": "%s was crushed by a tree",
+  "treephysics.config.axes_push_trees": "Axes Push Trees",
+  "treephysics.config.axes_push_trees.tooltip": "If you are able to push trees while holding an axe",
   "treephysics.config.despawn_behavior": "Despawn Behavior",
   "treephysics.config.despawn_behavior.tooltip": "NO_DESPAWN: Trees will not despawn at all\nDESPAWN_SMALL: Trees with an amount of logs less than or equal to the value of SMALL_TREE_MAXIMUM will despawn\nDESPAWN_ALL: Every tree will despawn\n",
   "treephysics.config.despawn_time": "Despawn Time",

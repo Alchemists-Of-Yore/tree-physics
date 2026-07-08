@@ -28,6 +28,7 @@ public class TreePhysicsConfig {
     public static final ModConfigSpec.DoubleValue IMPULSE_FORCE;
     public static final ModConfigSpec.DoubleValue IMPULSE_TORQUE;
     public static final ModConfigSpec.DoubleValue EXTRA_PUSH_MULTIPLIER;
+    public static final ModConfigSpec.BooleanValue AXES_PUSH_TREES;
     public static final ModConfigSpec.BooleanValue STATIC_LEAF_COLLISION;
 
     static {
@@ -98,6 +99,9 @@ public class TreePhysicsConfig {
 
         EXTRA_PUSH_MULTIPLIER = create(builder, "Extra Push Multiplier", "How much extra pushing strength should be applied for upright trees")
                 .defineInRange("extra_push_multiplier", 1.5, 0.0, Double.MAX_VALUE);
+
+        AXES_PUSH_TREES = create(builder, "Axes Push Trees", "If you are able to push trees while holding an axe")
+                .define("axes_push_trees", false);
 
         STATIC_LEAF_COLLISION = create(builder, "Static Leaf Collision", """
                 If leaves in world should have physics collision.
