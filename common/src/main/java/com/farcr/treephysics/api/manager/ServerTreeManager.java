@@ -88,7 +88,7 @@ public class ServerTreeManager extends SavedData implements TreeManager {
                 continue;
             }
 
-            if(tree.lifeTicks % 2 == 0 && tree.leafBreakProgress > -1 && tree.leafBreakProgress < 8) {
+            /*if(tree.lifeTicks % 2 == 0 && tree.leafBreakProgress > -1 && tree.leafBreakProgress < 8) {
                 int distance = LeavesBlock.DECAY_DISTANCE - tree.leafBreakProgress;
                 float breakChance = Math.min(distance < 2 ? 0 : 1, (distance * distance) / 25.0f);
 
@@ -104,7 +104,7 @@ public class ServerTreeManager extends SavedData implements TreeManager {
                 }
 
                 tree.leafBreakProgress++;
-            }
+            }*/
 
             if(this.shouldDespawn(tree)) {
                 if(TreePhysicsConfig.DROP_ITEMS_ON_DESPAWN.get()) {

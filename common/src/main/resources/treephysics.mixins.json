@@ -10,6 +10,7 @@
     "collision_effects.BlockWithSubLevelCallbackMixin",
     "collision_effects.LeavesBlockMixin",
     "entity_damage.LivingEntityMixin",
+    "evil_patch.ServerSubLevelMixin",
     "leaf_collision.RapierPhysicsPipelineMixin",
     "leaf_collision.VoxelNeighborhoodStateMixin",
     "rooted_dirt_placement.TreeFeatureMixin",
