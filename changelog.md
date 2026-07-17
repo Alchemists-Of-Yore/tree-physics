@@ -1,3 +1,5 @@
-- Fix random crash when trees are chopped down
-- Fix crawling when trying to walk through leaves
-- Fix F5 camera colliding with leaves
+- Disable splitting on tree sub-levels
+  - This is a temporary "fix" for a crash in Sable
+- Tree sub-levels can now split based on the tree detection logic
+- Add `#treephysics:ground` tag that determines which blocks are valid ground when using rootless tree detection
+- Axes no longer push tree sub-levels (configurable)
