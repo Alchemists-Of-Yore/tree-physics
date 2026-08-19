@@ -16,6 +16,7 @@ public class TreePhysicsLang {
 
         consumer.accept("treephysics.config.title", "Tree Physics Config");
         consumer.accept("treephysics.config.section.physics", "Physics");
+        consumer.accept("treephysics.config.section.compatibility", "Mod Compatibility");
 
         LANG.forEach(consumer);
     }

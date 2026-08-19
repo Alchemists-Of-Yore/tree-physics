@@ -31,6 +31,8 @@ public class TreePhysicsConfig {
     public static final ModConfigSpec.BooleanValue AXES_PUSH_TREES;
     public static final ModConfigSpec.BooleanValue STATIC_LEAF_COLLISION;
 
+    public static final ModConfigSpec.BooleanValue CREATE_SAWS_FELL_TREES;
+
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
@@ -109,6 +111,13 @@ public class TreePhysicsConfig {
                 """)
                 .worldRestart()
                 .define("static_leaf_collision", false);
+
+        builder.pop();
+
+        builder.translation("treephysics.config.section.compatibility").push("compatibility");
+
+        CREATE_SAWS_FELL_TREES = create(builder, "Create Saws Fell Trees","If Mechanical Saws from Create should cause trees to fall instead of destroying them")
+                .define("create_saws_fell_trees", false);
 
         builder.pop();
 

@@ -6,6 +6,7 @@
   "plugin": "com.farcr.treephysics.TreePhysicsMixinPlugin",
   "mixins": [
     "compatibility.blueprint.BlueprintTreeFeatureMixin",
+    "compatibility.create.SawBlockEntityMixin",
     "compatibility.malum.LodestoneBlockFillerLayerMixin",
     "compatibility.malum.SoulwoodTreeFeatureMixin",
     "compatibility.spawn.DateTreeFeatureMixin"

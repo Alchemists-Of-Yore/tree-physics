@@ -67,6 +67,9 @@ dependencies {
     compileOnly("maven.modrinth:lodestonelib:$lodestone_version")
     compileOnly("maven.modrinth:spawn-mod:$spawn_version")
     compileOnly("maven.modrinth:blueprint:$blueprint_version")
+    compileOnly("com.simibubi.create:create-${minecraft_version}:${create_version}") { transitive = false }
+    implementation("net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}")
+
 }
 
 sourceSets.main.resources {

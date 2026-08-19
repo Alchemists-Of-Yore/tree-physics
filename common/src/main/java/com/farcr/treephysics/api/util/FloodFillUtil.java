@@ -6,17 +6,25 @@ import com.farcr.treephysics.api.manager.ServerTreeManager;
 import com.farcr.treephysics.api.manager.TreeManager;
 import com.farcr.treephysics.index.TreePhysicsConfig;
 import com.farcr.treephysics.index.TreePhysicsTags;
+import dev.ryanhcode.sable.Sable;
 import dev.ryanhcode.sable.api.SubLevelAssemblyHelper;
+import dev.ryanhcode.sable.api.physics.handle.RigidBodyHandle;
 import dev.ryanhcode.sable.companion.math.BoundingBox3i;
+import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import dev.ryanhcode.sable.physics.config.block_properties.PhysicsBlockPropertyHelper;
 import dev.ryanhcode.sable.sublevel.ServerSubLevel;
+import dev.ryanhcode.sable.sublevel.system.SubLevelPhysicsSystem;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +76,56 @@ public class FloodFillUtil {
             .addRule(FloodFillUtil::fallingBlockRule)
             .addTag(TreePhysicsTags.TREE)
             .addTag(TreePhysicsTags.FALLS_FROM_TREES);
+
+    public static void blockBroken(ServerLevel level, BlockPos brokenPos, BlockState brokenState, @Nullable Vec3 brokenFrom, boolean skipWorldSplit) {
+        if(!TreeUtil.isLog(brokenState)) return;
+
+        ServerTreeManager manager = (ServerTreeManager) TreeManager.get(level);
+        if(!skipWorldSplit && !manager.isTree(brokenPos)) {
+
+            BlockPos belowPos = brokenPos.below();
+            BlockState belowState = level.getBlockState(belowPos);
+
+            List<ServerSubLevel> subLevels = FloodFillUtil.trySplit(level, brokenPos);
+
+            if(TreeUtil.isRoot(belowState) && TreePhysicsConfig.REMOVE_ROOTED_DIRT.get()) {
+                if(TreePhysicsConfig.DROP_HANGING_ROOTS.get()) {
+                    Block.popResourceFromFace(level, belowPos, Direction.UP, Blocks.HANGING_ROOTS.asItem().getDefaultInstance());
+                }
+                level.setBlock(belowPos, Blocks.DIRT.defaultBlockState(), 2);
+            }
+
+            if(brokenFrom != null && TreeUtil.getLogAxis(brokenState) == Direction.Axis.Y) {
+                brokenFrom = Sable.HELPER.projectOutOfSubLevel(level, brokenFrom);
+                Vec3 breakDirection = brokenFrom.subtract(brokenPos.getCenter()).normalize().multiply(1, 0, 1);
+                Vector3d forward = new Vector3d(JOMLConversion.toJOML(Direction.getNearest(breakDirection).getNormal()));
+                forward.rotateAxis(Math.toRadians(level.getRandom().nextIntBetweenInclusive(-25, 25)), 0, 1, 0);
+
+                Vector3d torque = forward.cross(0, 1, 0, new Vector3d()).mul(TreePhysicsConfig.IMPULSE_TORQUE.getAsDouble());
+                Vector3d velocity = forward.negate(new Vector3d()).mul(TreePhysicsConfig.IMPULSE_FORCE.getAsDouble());
+
+                for (ServerSubLevel subLevel : subLevels) {
+                    SubLevelPhysicsSystem system = SubLevelPhysicsSystem.get(level);
+                    RigidBodyHandle handle = system.getPhysicsHandle(subLevel);
+
+                    handle.addLinearAndAngularVelocity(velocity, torque);
+                }
+            }
+
+        } else if (manager.isTree(brokenPos)) {
+
+            List<TreeResult> results = findTreesAround(level, brokenPos);
+            if(results.size() > 1) {
+                results = new ArrayList<>(results.stream().sorted().toList());
+                results.removeFirst();
+                for (TreeResult result : results) {
+                    BoundingBox3i box = BoundingBox3i.from(result.getBlocks());
+                    SubLevelAssemblyHelper.assembleBlocks(level, brokenPos, result.getBlocks(), box);
+                }
+            }
+
+        }
+    }
 
     public static boolean isValidTree(BlockGetter blockGetter, BlockPos pos) {
         boolean rootless = TreePhysicsConfig.ROOTLESS_TREE_DETECTION.getAsBoolean();
