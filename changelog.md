@@ -1,5 +1,2 @@
-- Disable splitting on tree sub-levels
-  - This is a temporary "fix" for a crash in Sable
-- Tree sub-levels can now split based on the tree detection logic
-- Add `#treephysics:ground` tag that determines which blocks are valid ground when using rootless tree detection
-- Axes no longer push tree sub-levels (configurable)
+- Add a config for allowing Mechanical Saws from Create to fell trees
+- Fix an issue with [Let's Do] Vinery trees causing the server to freeze
