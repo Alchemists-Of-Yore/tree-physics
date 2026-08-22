@@ -12,6 +12,8 @@ import org.joml.Vector3d;
 
 public interface LivingEntityExtension {
     boolean treephysics$wasHitByTree();
+    long treephysics$getPanicTimestamp();
+    void treephysics$setPanicTimestamp(long panicTimestamp);
 
     static int doDamageAndKnockback(SubLevel subLevel, BlockPos blockPos, LivingEntity entity) {
         Vec3 last = subLevel.lastPose().transformPosition(blockPos.getCenter());

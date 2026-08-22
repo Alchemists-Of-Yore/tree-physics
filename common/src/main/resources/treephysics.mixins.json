@@ -10,6 +10,8 @@
     "collision_effects.BlockWithSubLevelCallbackMixin",
     "collision_effects.LeavesBlockMixin",
     "entity_damage.LivingEntityMixin",
+    "entity_panic.LivingEntityMixin",
+    "entity_panic.PanicGoalMixin",
     "evil_patch.ServerSubLevelMixin",
     "leaf_collision.RapierPhysicsPipelineMixin",
     "leaf_collision.VoxelNeighborhoodStateMixin",

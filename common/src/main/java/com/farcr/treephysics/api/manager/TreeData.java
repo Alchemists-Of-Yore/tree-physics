@@ -3,6 +3,7 @@ package com.farcr.treephysics.api.manager;
 import com.farcr.treephysics.api.util.TreeUtil;
 import com.farcr.treephysics.index.TreePhysicsSounds;
 import com.farcr.treephysics.index.TreePhysicsTags;
+import com.farcr.treephysics.mixinterface.LivingEntityExtension;
 import com.farcr.treephysics.particle.collision_dust.CollisionDustParticleOptions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -14,11 +15,14 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
+import java.util.List;
 import java.util.UUID;
 
 public class TreeData {
@@ -71,6 +75,14 @@ public class TreeData {
             if(!this.playedImpact && !this.isBranch) {
                 level.playSound(null, position.x, position.y, position.z, TreePhysicsSounds.TREE_IMPACT, SoundSource.BLOCKS, 3.0f, pitch);
                 this.playedImpact = true;
+
+                AABB aabb = subLevel.boundingBox().toMojang().inflate(8);
+                List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, aabb);
+                for (LivingEntity entity : entities) {
+                    if(entity instanceof LivingEntityExtension extension) {
+                        extension.treephysics$setPanicTimestamp(level.getGameTime());
+                    }
+                }
             }
             manager.startBreakingLeaves(subLevel);
         } else {
