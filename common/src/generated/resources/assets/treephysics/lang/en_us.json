@@ -3,6 +3,8 @@
   "death.attack.tree": "%s was crushed by a tree",
   "treephysics.config.axes_push_trees": "Axes Push Trees",
   "treephysics.config.axes_push_trees.tooltip": "If you are able to push trees while holding an axe",
+  "treephysics.config.collision_dust": "Collision Dust",
+  "treephysics.config.collision_dust.tooltip": "If dust particles should appear when trees hit the ground",
   "treephysics.config.create_saws_fell_trees": "Create Saws Fell Trees",
   "treephysics.config.create_saws_fell_trees.tooltip": "If Mechanical Saws from Create should cause trees to fall instead of destroying them",
   "treephysics.config.despawn_behavior": "Despawn Behavior",
